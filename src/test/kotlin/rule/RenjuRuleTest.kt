@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import rule.type.Foul
+import rule.type.KoRule
+import rule.wrapper.point.Point
 
 class RenjuRuleTest {
     private lateinit var renjuRule: OmokRule
@@ -41,7 +44,7 @@ class RenjuRuleTest {
         val whiteStones = listOf(Point(9, 9))
         val newStone = Point(3, 5)
 
-        val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, FoulType.THREE_TO_THREE)
+        val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, Foul.THREE_TO_THREE)
         assertThat(expected).isEqualTo(KoRule.KO_THREE_TO_THREE)
     }
 
@@ -77,7 +80,7 @@ class RenjuRuleTest {
         )
         val newStone = Point(newStoneRow, newStoneCol)
 
-        val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, FoulType.FOUR_TO_FOUR)
+        val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, Foul.FOUR_TO_FOUR)
         assertThat(expected).isEqualTo(KoRule.KO_FOUR_TO_FOUR)
     }
 

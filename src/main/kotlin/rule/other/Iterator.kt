@@ -1,4 +1,4 @@
-package rule
+package rule.other
 
 interface Iterator<T> {
     fun hasNext(): Boolean

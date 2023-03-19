@@ -1,4 +1,7 @@
-package rule
+package rule.wrapper.point
+
+import rule.Col
+import rule.Row
 
 data class Point(val row: Row, val col: Col) {
     fun move(rowStep: Int, colStep: Int): Point = Point(row + rowStep, col + colStep)

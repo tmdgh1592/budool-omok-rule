@@ -1,8 +1,13 @@
 package rule
 
-import rule.KoRule.Companion.FOUL_CONDITION_SIZE
-import rule.KoRule.Companion.MAX_EMPTY_SIZE
-import rule.KoRule.Companion.OVERLINE_SIZE
+import rule.type.Foul
+import rule.type.KoRule
+import rule.type.KoRule.Companion.FOUL_CONDITION_SIZE
+import rule.type.KoRule.Companion.MAX_EMPTY_SIZE
+import rule.type.KoRule.Companion.OVERLINE_SIZE
+import rule.type.WhiteBlocked
+import rule.wrapper.direction.Directions
+import rule.wrapper.point.Point
 
 class RenjuRule(
     boardWidth: Int = DEFAULT_BOARD_WIDTH,
@@ -13,8 +18,8 @@ class RenjuRule(
         blackPoints: List<Point>,
         whitePoints: List<Point>,
         startPoint: Point,
-        foulType: FoulType,
-    ): KoRule = checkFoulByAllDirections(blackPoints, whitePoints, startPoint, foulType)
+        foul: Foul,
+    ): KoRule = checkFoulByAllDirections(blackPoints, whitePoints, startPoint, foul)
 
 
     override fun checkOverline(
@@ -37,7 +42,7 @@ class RenjuRule(
         blackPoints: List<Point>,
         whitePoints: List<Point>,
         startPoint: Point,
-        foulType: FoulType,
+        foul: Foul,
     ): KoRule {
         var continuousStones = 0
         val dirIterator = Directions().iterator()
@@ -49,28 +54,28 @@ class RenjuRule(
             val (forwardCount, forwardEmptyCount) = findStraight(
                 blackPoints, whitePoints,
                 startPoint, forwardDir,
-                foulType,
+                foul,
             )
             val (backCount, backEmptyCount) = findStraight(
                 blackPoints, whitePoints,
                 startPoint, backDir,
-                foulType,
+                foul,
             )
             val totalStoneCount = forwardCount + backCount - 1
             val totalEmptyCount = forwardEmptyCount + backEmptyCount
 
-            when (foulType) {
-                FoulType.THREE_TO_THREE -> {
-                    if (totalStoneCount == foulType.size && totalEmptyCount <= MAX_EMPTY_SIZE) {
+            when (foul) {
+                Foul.THREE_TO_THREE -> {
+                    if (totalStoneCount == foul.size && totalEmptyCount <= MAX_EMPTY_SIZE) {
                         val blockedStatus = isBlockedByWhiteStoneInSix(whitePoints, startPoint, forwardDir)
-                        if (blockedStatus == WhiteBlockedStatus.NON_BLOCK) continuousStones++
+                        if (blockedStatus == WhiteBlocked.NON_BLOCK) continuousStones++
                         if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_THREE_TO_THREE
                     }
                 }
 
-                FoulType.FOUR_TO_FOUR -> {
-                    if (totalStoneCount > foulType.size && forwardEmptyCount == 1 && backEmptyCount == 1) return KoRule.KO_FOUR_TO_FOUR
-                    if (totalStoneCount == foulType.size && totalEmptyCount <= MAX_EMPTY_SIZE) continuousStones++
+                Foul.FOUR_TO_FOUR -> {
+                    if (totalStoneCount > foul.size && forwardEmptyCount == 1 && backEmptyCount == 1) return KoRule.KO_FOUR_TO_FOUR
+                    if (totalStoneCount == foul.size && totalEmptyCount <= MAX_EMPTY_SIZE) continuousStones++
                     if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_FOUR_TO_FOUR
                 }
             }
@@ -84,7 +89,7 @@ class RenjuRule(
         whitePoints: List<Point>,
         point: Point,
         direction: Direction<Row, Col>,
-    ): WhiteBlockedStatus {
+    ): WhiteBlocked {
         val (oneDirMoveCount, oneDirFound) = checkWhite(
             whitePoints, point,
             direction, FORWARD_WEIGHT,
@@ -94,8 +99,8 @@ class RenjuRule(
             direction, BACK_WEIGHT,
         )
         val totalMoveCount = oneDirMoveCount + otherDirMoveCount
-        return WhiteBlockedStatus.of(
-            totalMoveCount <= WhiteBlockedStatus.INNER_DISTANCE &&
+        return WhiteBlocked.of(
+            totalMoveCount <= WhiteBlocked.INNER_DISTANCE &&
                     oneDirFound && otherDirFound
         )
     }
@@ -111,7 +116,7 @@ class RenjuRule(
         val colStep = direction.second * weight
         var curPoint = point.move(rowStep, colStep)
         var moveCount = 0
-        while (curPoint.inRange(boardWidth, boardHeight) && moveCount <= WhiteBlockedStatus.INNER_DISTANCE) {
+        while (curPoint.inRange(boardWidth, boardHeight) && moveCount <= WhiteBlocked.INNER_DISTANCE) {
             moveCount++
             if (whiteStones isPlaced curPoint) return Pair(moveCount, true)
             curPoint = curPoint.move(rowStep, colStep)
@@ -125,7 +130,7 @@ class RenjuRule(
         whitePoints: List<Point>,
         startPoint: Point,
         direction: Direction<Row, Col>,
-        foulType: FoulType,
+        foul: Foul,
     ): Pair<Int, Int> {
         var sameStoneCount = DEFAULT_SAME_STONE_COUNT
         var emptyCount = DEFAULT_EMPTY_COUNT
@@ -136,7 +141,7 @@ class RenjuRule(
         while (curPoint.inRange(boardWidth, boardHeight) &&
             !whitePoints.isPlaced(curPoint) &&
             emptyCount <= MAX_EMPTY_SIZE &&
-            sameStoneCount < foulType.size
+            sameStoneCount < foul.size
         ) {
             val hasBlackStone = blackPoints isPlaced curPoint
             val hasWhiteStone = whitePoints isPlaced curPoint

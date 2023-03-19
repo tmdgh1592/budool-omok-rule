@@ -1,5 +1,9 @@
 package rule
 
+import rule.type.Foul
+import rule.type.KoRule
+import rule.wrapper.point.Point
+
 typealias Row = Int
 typealias Col = Int
 typealias MoveWeight = Int
@@ -22,8 +26,8 @@ abstract class OmokRule(
         whitePoints: List<Point>,
         startPoint: Point,
     ): KoRule = if (listOf(
-            checkFoul(blackPoints, whitePoints, startPoint, FoulType.THREE_TO_THREE),
-            checkFoul(blackPoints, whitePoints, startPoint, FoulType.FOUR_TO_FOUR),
+            checkFoul(blackPoints, whitePoints, startPoint, Foul.THREE_TO_THREE),
+            checkFoul(blackPoints, whitePoints, startPoint, Foul.FOUR_TO_FOUR),
             checkOverline(blackPoints, startPoint)
         ).any { it.state }
     ) KoRule.KO_ALL else KoRule.NOT_KO
@@ -40,7 +44,7 @@ abstract class OmokRule(
         blackPoints: List<Point>,
         whitePoints: List<Point>,
         startPoint: Point,
-        foulType: FoulType,
+        foul: Foul,
     ): KoRule
 
 

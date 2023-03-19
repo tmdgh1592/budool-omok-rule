@@ -1,4 +1,7 @@
-package rule
+package rule.wrapper.direction
+
+import rule.*
+import rule.other.Iterator
 
 class Directions {
     private val directions = listOf(

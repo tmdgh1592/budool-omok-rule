@@ -1,4 +1,4 @@
-package rule
+package rule.type
 
 enum class KoRule(val state: Boolean) {
     KO_ALL(true),
