@@ -26,8 +26,8 @@ abstract class OmokRule(
         whitePoints: List<Point>,
         startPoint: Point,
     ): KoRule = if (listOf(
-            checkFoul(blackPoints, whitePoints, startPoint, Foul.THREE_TO_THREE),
-            checkFoul(blackPoints, whitePoints, startPoint, Foul.FOUR_TO_FOUR),
+            checkFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_THREE),
+            checkFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_FOUR),
             checkOverline(blackPoints, startPoint)
         ).any { it.state }
     ) KoRule.KO_ALL else KoRule.NOT_KO

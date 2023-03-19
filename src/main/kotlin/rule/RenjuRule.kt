@@ -65,18 +65,18 @@ class RenjuRule(
             val totalEmptyCount = forwardEmptyCount + backEmptyCount
 
             when (foul) {
-                Foul.THREE_TO_THREE -> {
+                Foul.DOUBLE_THREE -> {
                     if (totalStoneCount == foul.size && totalEmptyCount <= MAX_EMPTY_SIZE) {
                         val blockedStatus = isBlockedByWhiteStoneInSix(whitePoints, startPoint, forwardDir)
                         if (blockedStatus == WhiteBlocked.NON_BLOCK) continuousStones++
-                        if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_THREE_TO_THREE
+                        if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_DOUBLE_THREE
                     }
                 }
 
-                Foul.FOUR_TO_FOUR -> {
-                    if (totalStoneCount > foul.size && forwardEmptyCount == 1 && backEmptyCount == 1) return KoRule.KO_FOUR_TO_FOUR
+                Foul.DOUBLE_FOUR -> {
+                    if (totalStoneCount > foul.size && forwardEmptyCount == 1 && backEmptyCount == 1) return KoRule.KO_DOUBLE_FOUR
                     if (totalStoneCount == foul.size && totalEmptyCount <= MAX_EMPTY_SIZE) continuousStones++
-                    if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_FOUR_TO_FOUR
+                    if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_DOUBLE_FOUR
                 }
             }
 
