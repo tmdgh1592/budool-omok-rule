@@ -28,7 +28,8 @@ class RenjuRule(
         while (dirIterator.hasNext()) {
             val forwardCount = findLongOmok(stonesPositions, startPosition, dirIterator.next(), FORWARD_WEIGHT)
             val backCount = findLongOmok(stonesPositions, startPosition, dirIterator.next(), BACK_WEIGHT)
-            if (forwardCount + backCount > MAX_DISTANCE_TWO_BLOCKED_WHITE_STONE) return KoRule.KO_OVERLINE
+            val totalMoveCount = forwardCount + backCount - 1
+            if (totalMoveCount >= 6) return KoRule.KO_OVERLINE
         }
         return KoRule.NOT_KO
     }
@@ -57,7 +58,8 @@ class RenjuRule(
             if (forwardCount + backCount - 1 == THREE_TO_THREE_SIZE &&
                 forwardEmptyCount + backEmptyCount <= MAX_EMPTY_SIZE
             ) {
-                if (!isBlockedByWhiteStoneInSix(whitePositions, startPosition, forwardDir)) threeCount++
+                val blockedStatus = isBlockedByWhiteStoneInSix(whitePositions, startPosition, forwardDir)
+                if (blockedStatus == WhiteBlockedStatus.NON_BLOCK) threeCount++
                 if (threeCount == FOUL_CONDITION_SIZE) return KoRule.KO_THREE_TO_THREE
             }
         }
@@ -100,7 +102,7 @@ class RenjuRule(
         whitePositions: List<Position<Row, Col>>,
         position: Position<Row, Col>,
         direction: Direction<Row, Col>,
-    ): Boolean {
+    ): WhiteBlockedStatus {
         val (oneDirMoveCount, oneDirFound) = checkWhite(
             whitePositions, position,
             direction, FORWARD_WEIGHT,
@@ -109,9 +111,11 @@ class RenjuRule(
             whitePositions, position,
             direction, BACK_WEIGHT,
         )
-
-        return oneDirMoveCount + otherDirMoveCount <= MAX_DISTANCE_TWO_BLOCKED_WHITE_STONE &&
-                oneDirFound && otherDirFound
+        val totalMoveCount = oneDirMoveCount + otherDirMoveCount
+        return WhiteBlockedStatus.of(
+            totalMoveCount <= WhiteBlockedStatus.INNER_DISTANCE &&
+                    oneDirFound && otherDirFound
+        )
     }
 
 
@@ -126,7 +130,7 @@ class RenjuRule(
             position.second + direction.second * weight
         )
         var moveCount = 0
-        while (inRange(curRow, curCol) && moveCount <= MAX_DISTANCE_TWO_BLOCKED_WHITE_STONE) {
+        while (inRange(curRow, curCol) && moveCount <= WhiteBlockedStatus.INNER_DISTANCE) {
             moveCount++
             if (whiteStones.isPlaced(curRow, curCol)) return Pair(moveCount, true)
             curRow += direction.first * weight
@@ -194,8 +198,6 @@ class RenjuRule(
     companion object {
         private const val FORWARD_WEIGHT = 1
         private const val BACK_WEIGHT = -1
-
-        private const val MAX_DISTANCE_TWO_BLOCKED_WHITE_STONE = 6
 
         private const val DEFAULT_BOARD_WIDTH = 15
         private const val DEFAULT_BOARD_HEIGHT = 15
