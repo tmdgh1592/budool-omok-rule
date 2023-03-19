@@ -26,15 +26,25 @@ class RenjuRule(
         stonesPoints: List<Point>,
         startPoint: Point,
     ): KoRule {
+        if (isContinuousSameStones(stonesPoints, startPoint, OVERLINE_SIZE)) return KoRule.KO_OVERLINE
+        return KoRule.NOT_KO
+    }
+
+
+    override fun isContinuousSameStones(
+        stonesPoints: List<Point>,
+        startPoint: Point,
+        sameStoneToCheck: Int,
+    ): Boolean {
         val dirIterator = Directions().iterator()
 
         while (dirIterator.hasNext()) {
             val forwardCount = findLongOmok(stonesPoints, startPoint, dirIterator.next())
             val backCount = findLongOmok(stonesPoints, startPoint, dirIterator.next())
             val totalMoveCount = forwardCount + backCount - 1
-            if (totalMoveCount >= OVERLINE_SIZE) return KoRule.KO_OVERLINE
+            if (totalMoveCount >= sameStoneToCheck) return true
         }
-        return KoRule.NOT_KO
+        return false
     }
 
 
@@ -44,6 +54,10 @@ class RenjuRule(
         startPoint: Point,
         foul: Foul,
     ): KoRule {
+        if (isContinuousSameStones(blackPoints, startPoint, WIN_STANDARD)) {
+            return KoRule.NOT_KO
+        }
+
         var continuousStones = 0
         val dirIterator = Directions().iterator()
 
@@ -52,14 +66,12 @@ class RenjuRule(
             val backDir = dirIterator.next()
 
             val (forwardCount, forwardEmptyCount) = findStraight(
-                blackPoints, whitePoints,
-                startPoint, forwardDir,
-                foul,
+                blackPoints, whitePoints, startPoint,
+                forwardDir, foul,
             )
             val (backCount, backEmptyCount) = findStraight(
-                blackPoints, whitePoints,
-                startPoint, backDir,
-                foul,
+                blackPoints, whitePoints, startPoint,
+                backDir, foul,
             )
             val totalStoneCount = forwardCount + backCount - 1
             val totalEmptyCount = forwardEmptyCount + backEmptyCount

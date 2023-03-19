@@ -98,4 +98,21 @@ class RenjuRuleTest {
         val expected = renjuRule.checkOverline(blackStones, newStone)
         assertThat(expected).isEqualTo(KoRule.KO_OVERLINE)
     }
+
+    @Test
+    fun `만약 5개가 연이어져 있다면 3-3, 4-4어도 반칙이 아니다`() {
+        val blackStones = listOf(
+            Point(5, 5),
+            Point(5, 6),
+            Point(6, 7),
+            Point(7, 7),
+            Point(5, 8),
+            Point(5, 9),
+        )
+        val whiteStones = listOf<Point>()
+        val newStone = Point(5, 7)
+
+        val expected = renjuRule.checkAllFoulCondition(blackStones, whiteStones, newStone)
+        assertThat(expected).isEqualTo(KoRule.NOT_KO)
+    }
 }
