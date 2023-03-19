@@ -1,5 +1,11 @@
 package rule
 
+import rule.KoRule.Companion.FOUL_CONDITION_SIZE
+import rule.KoRule.Companion.FOUR_TO_FOUR_SIZE
+import rule.KoRule.Companion.MAX_EMPTY_SIZE
+import rule.KoRule.Companion.OVERLINE_SIZE
+import rule.KoRule.Companion.THREE_TO_THREE_SIZE
+
 class RenjuRule(
     boardWidth: Int = DEFAULT_BOARD_WIDTH,
     boardHeight: Int = DEFAULT_BOARD_HEIGHT,
@@ -26,10 +32,10 @@ class RenjuRule(
         val dirIterator = Directions().iterator()
 
         while (dirIterator.hasNext()) {
-            val forwardCount = findLongOmok(stonesPositions, startPosition, dirIterator.next(), FORWARD_WEIGHT)
-            val backCount = findLongOmok(stonesPositions, startPosition, dirIterator.next(), BACK_WEIGHT)
+            val forwardCount = findLongOmok(stonesPositions, startPosition, dirIterator.next())
+            val backCount = findLongOmok(stonesPositions, startPosition, dirIterator.next())
             val totalMoveCount = forwardCount + backCount - 1
-            if (totalMoveCount >= 6) return KoRule.KO_OVERLINE
+            if (totalMoveCount >= OVERLINE_SIZE) return KoRule.KO_OVERLINE
         }
         return KoRule.NOT_KO
     }
@@ -180,16 +186,15 @@ class RenjuRule(
         stonesPositions: List<Position<Row, Col>>,
         startPosition: Position<Row, Col>,
         direction: Pair<Int, Int>,
-        weight: Int = FORWARD_WEIGHT,
     ): Int {
         val (startRow, startCol) = startPosition
         var sameStoneCount = DEFAULT_SAME_STONE_COUNT
-        var (currentRow, currentCol) = Pair(startRow + direction.first * weight, startCol + direction.second * weight)
+        var (currentRow, currentCol) = Pair(startRow + direction.first, startCol + direction.second)
 
         while (inRange(currentRow, currentCol) && stonesPositions.isPlaced(currentRow, currentCol)) {
             sameStoneCount++
-            currentRow += direction.first * weight
-            currentCol += direction.second * weight
+            currentRow += direction.first
+            currentCol += direction.second
         }
         return sameStoneCount
     }
@@ -201,11 +206,6 @@ class RenjuRule(
 
         private const val DEFAULT_BOARD_WIDTH = 15
         private const val DEFAULT_BOARD_HEIGHT = 15
-
-        private const val THREE_TO_THREE_SIZE = 3
-        private const val FOUR_TO_FOUR_SIZE = 4
-        private const val FOUL_CONDITION_SIZE = 2
-        private const val MAX_EMPTY_SIZE = 1
 
         private const val DEFAULT_SAME_STONE_COUNT = 1
         private const val DEFAULT_EMPTY_COUNT = 0
