@@ -9,8 +9,6 @@ enum class KoRule(val state: Boolean) {
 
     companion object {
         const val OVERLINE_SIZE = 6
-        const val THREE_TO_THREE_SIZE = 3
-        const val FOUR_TO_FOUR_SIZE = 4
         const val FOUL_CONDITION_SIZE = 2
         const val MAX_EMPTY_SIZE = 1
     }
