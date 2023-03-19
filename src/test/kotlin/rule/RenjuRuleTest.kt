@@ -41,7 +41,7 @@ class RenjuRuleTest {
         val whiteStones = listOf(Position(9, 9))
         val newStone = Position(3, 5)
 
-        val expected = renjuRule.checkThreeToThreePoint(blackStones, whiteStones, newStone)
+        val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, FoulType.THREE_TO_THREE)
         assertThat(expected).isEqualTo(KoRule.KO_THREE_TO_THREE)
     }
 
@@ -77,7 +77,7 @@ class RenjuRuleTest {
         )
         val newStone = Position(newStoneRow, newStoneCol)
 
-        val expected = renjuRule.checkFourToFourPoint(blackStones, whiteStones, newStone)
+        val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, FoulType.FOUR_TO_FOUR)
         assertThat(expected).isEqualTo(KoRule.KO_FOUR_TO_FOUR)
     }
 

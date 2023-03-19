@@ -9,18 +9,12 @@ class RenjuRule(
     boardHeight: Int = DEFAULT_BOARD_HEIGHT,
 ) : OmokRule(boardWidth, boardHeight) {
 
-    override fun checkThreeToThreePoint(
+    override fun checkFoul(
         blackPositions: List<Position<Row, Col>>,
         whitePositions: List<Position<Row, Col>>,
         startPosition: Position<Row, Col>,
-    ): KoRule = checkAllThreeToThreeDirections(blackPositions, whitePositions, startPosition)
-
-
-    override fun checkFourToFourPoint(
-        blackPositions: List<Position<Row, Col>>,
-        whitePositions: List<Position<Row, Col>>,
-        startPosition: Position<Row, Col>,
-    ): KoRule = checkAllFourToFourDirections(blackPositions, whitePositions, startPosition)
+        foulType: FoulType,
+    ): KoRule = checkFoulByAllDirections(blackPositions, whitePositions, startPosition, foulType)
 
 
     override fun checkOverline(
@@ -39,64 +33,48 @@ class RenjuRule(
     }
 
 
-    private fun checkAllThreeToThreeDirections(
+    private fun checkFoulByAllDirections(
         blackPositions: List<Position<Row, Col>>,
         whitePositions: List<Position<Row, Col>>,
         startPosition: Position<Row, Col>,
+        foulType: FoulType,
     ): KoRule {
-        var threeCount = 0
+        var continuousStones = 0
         val dirIterator = Directions().iterator()
-        val forwardDir = dirIterator.next()
+
         while (dirIterator.hasNext()) {
+            val forwardDir = dirIterator.next()
+            val backDir = dirIterator.next()
+
             val (forwardCount, forwardEmptyCount) = findStraight(
                 blackPositions, whitePositions,
                 startPosition, forwardDir,
-                FoulType.THREE_TO_THREE,
+                foulType,
             )
             val (backCount, backEmptyCount) = findStraight(
                 blackPositions, whitePositions,
-                startPosition, dirIterator.next(),
-                FoulType.THREE_TO_THREE,
+                startPosition, backDir,
+                foulType,
             )
+            val totalStoneCount = forwardCount + backCount - 1
+            val totalEmptyCount = forwardEmptyCount + backEmptyCount
 
-            if (forwardCount + backCount - 1 == FoulType.THREE_TO_THREE.size &&
-                forwardEmptyCount + backEmptyCount <= MAX_EMPTY_SIZE
-            ) {
-                val blockedStatus = isBlockedByWhiteStoneInSix(whitePositions, startPosition, forwardDir)
-                if (blockedStatus == WhiteBlockedStatus.NON_BLOCK) threeCount++
-                if (threeCount == FOUL_CONDITION_SIZE) return KoRule.KO_THREE_TO_THREE
+            when (foulType) {
+                FoulType.THREE_TO_THREE -> {
+                    if (totalStoneCount == foulType.size && totalEmptyCount <= MAX_EMPTY_SIZE) {
+                        val blockedStatus = isBlockedByWhiteStoneInSix(whitePositions, startPosition, forwardDir)
+                        if (blockedStatus == WhiteBlockedStatus.NON_BLOCK) continuousStones++
+                        if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_THREE_TO_THREE
+                    }
+                }
+
+                FoulType.FOUR_TO_FOUR -> {
+                    if (totalStoneCount > foulType.size && forwardEmptyCount == 1 && backEmptyCount == 1) return KoRule.KO_FOUR_TO_FOUR
+                    if (totalStoneCount == foulType.size && totalEmptyCount <= MAX_EMPTY_SIZE) continuousStones++
+                    if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_FOUR_TO_FOUR
+                }
             }
-        }
-        return KoRule.NOT_KO
-    }
 
-
-    private fun checkAllFourToFourDirections(
-        blackPositions: List<Position<Row, Col>>,
-        whitePositions: List<Position<Row, Col>>,
-        startPosition: Position<Row, Col>,
-    ): KoRule {
-        var fourCount = 0
-        val dirIterator = Directions().iterator()
-
-        while (dirIterator.hasNext()) {
-            val (forwardCount, forwardEmptyCount) = findStraight(
-                blackPositions, whitePositions,
-                startPosition, dirIterator.next(),
-                FoulType.FOUR_TO_FOUR,
-            )
-            val (backCount, backEmptyCount) = findStraight(
-                blackPositions, whitePositions,
-                startPosition, dirIterator.next(),
-                FoulType.FOUR_TO_FOUR,
-            )
-
-            val stoneCount = forwardCount + backCount - 1
-            if (stoneCount >= 5 && forwardEmptyCount == 1 && backEmptyCount == 1) return KoRule.KO_FOUR_TO_FOUR
-            if (stoneCount == FoulType.FOUR_TO_FOUR.size && forwardEmptyCount + backEmptyCount <= MAX_EMPTY_SIZE) {
-                fourCount++
-                if (fourCount == FOUL_CONDITION_SIZE) return KoRule.KO_FOUR_TO_FOUR
-            }
         }
         return KoRule.NOT_KO
     }

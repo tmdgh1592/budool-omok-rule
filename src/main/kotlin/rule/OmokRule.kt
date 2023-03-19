@@ -23,37 +23,27 @@ abstract class OmokRule(
         whitePositions: List<Position<Row, Col>>,
         startPosition: Position<Row, Col>,
     ): KoRule = if (listOf(
-            checkThreeToThreePoint(blackPositions, whitePositions, startPosition),
-            checkFourToFourPoint(blackPositions, whitePositions, startPosition),
+            checkFoul(blackPositions, whitePositions, startPosition, FoulType.THREE_TO_THREE),
+            checkFoul(blackPositions, whitePositions, startPosition, FoulType.FOUR_TO_FOUR),
             checkOverline(blackPositions, startPosition)
         ).any { it.state }
     ) KoRule.KO_ALL else KoRule.NOT_KO
 
-    /**
-     * check 'three-three' point
-     * @param blackPositions List of pairs for row and column of black stones.
-     * @param whitePositions List of pairs for row and column of white stones.
-     * @param startPosition The row and column of the stone that is being placed.
-     * @return Whether the given row and column correspond to 3-3.
-     * */
-    abstract fun checkThreeToThreePoint(
-        blackPositions: List<Position<Row, Col>>,
-        whitePositions: List<Position<Row, Col>>,
-        startPosition: Position<Row, Col>,
-    ): KoRule
 
     /**
-     * Check 'four-four' point.
+     * check 'three-three' point or 'four-four' point according to the given 'foul type'
      * @param blackPositions List of pairs for row and column of black stones.
      * @param whitePositions List of pairs for row and column of white stones.
      * @param startPosition The row and column of the stone that is being placed.
-     * @return Returns whether the given row and column correspond to 4-4.
+     * @return Whether the given row and column correspond to 3-3 or 4-4 according to the given 'foul type'.
      * */
-    abstract fun checkFourToFourPoint(
+    abstract fun checkFoul(
         blackPositions: List<Position<Row, Col>>,
         whitePositions: List<Position<Row, Col>>,
         startPosition: Position<Row, Col>,
+        foulType: FoulType,
     ): KoRule
+
 
     /**
      * Check 'overline' pattern.
