@@ -23,9 +23,11 @@ class RenjuRule(
         stonesPositions: List<Position<Row, Col>>,
         startPosition: Position<Row, Col>,
     ): KoRule {
-        for (moveDirection in directions) {
-            val forwardCount = findLongOmok(stonesPositions, startPosition, moveDirection, FORWARD_WEIGHT)
-            val backCount = findLongOmok(stonesPositions, startPosition, moveDirection, BACK_WEIGHT)
+        val dirIterator = Directions().iterator()
+
+        while (dirIterator.hasNext()) {
+            val forwardCount = findLongOmok(stonesPositions, startPosition, dirIterator.next(), FORWARD_WEIGHT)
+            val backCount = findLongOmok(stonesPositions, startPosition, dirIterator.next(), BACK_WEIGHT)
             if (forwardCount + backCount > MAX_DISTANCE_TWO_BLOCKED_WHITE_STONE) return KoRule.KO_OVERLINE
         }
         return KoRule.NOT_KO
@@ -38,23 +40,24 @@ class RenjuRule(
         startPosition: Position<Row, Col>,
     ): KoRule {
         var threeCount = 0
-
-        for (moveDirection in directions) {
+        val dirIterator = Directions().iterator()
+        val forwardDir = dirIterator.next()
+        while (dirIterator.hasNext()) {
             val (forwardCount, forwardEmptyCount) = findStraight(
                 blackPositions, whitePositions,
-                startPosition, moveDirection,
-                FORWARD_WEIGHT, THREE_TO_THREE_SIZE,
+                startPosition, forwardDir,
+                THREE_TO_THREE_SIZE,
             )
             val (backCount, backEmptyCount) = findStraight(
                 blackPositions, whitePositions,
-                startPosition, moveDirection,
-                BACK_WEIGHT, THREE_TO_THREE_SIZE,
+                startPosition, dirIterator.next(),
+                THREE_TO_THREE_SIZE,
             )
 
             if (forwardCount + backCount - 1 == THREE_TO_THREE_SIZE &&
                 forwardEmptyCount + backEmptyCount <= MAX_EMPTY_SIZE
             ) {
-                if (!isBlockedByWhiteStoneInSix(whitePositions, startPosition, moveDirection)) threeCount++
+                if (!isBlockedByWhiteStoneInSix(whitePositions, startPosition, forwardDir)) threeCount++
                 if (threeCount == FOUL_CONDITION_SIZE) return KoRule.KO_THREE_TO_THREE
             }
         }
@@ -68,17 +71,18 @@ class RenjuRule(
         startPosition: Position<Row, Col>,
     ): KoRule {
         var fourCount = 0
+        val dirIterator = Directions().iterator()
 
-        for (moveDirection in directions) {
+        while (dirIterator.hasNext()) {
             val (forwardCount, forwardEmptyCount) = findStraight(
                 blackPositions, whitePositions,
-                startPosition, moveDirection,
-                FORWARD_WEIGHT, FOUR_TO_FOUR_SIZE,
+                startPosition, dirIterator.next(),
+                FOUR_TO_FOUR_SIZE,
             )
             val (backCount, backEmptyCount) = findStraight(
                 blackPositions, whitePositions,
-                startPosition, moveDirection,
-                BACK_WEIGHT, FOUR_TO_FOUR_SIZE,
+                startPosition, dirIterator.next(),
+                FOUR_TO_FOUR_SIZE,
             )
 
             val stoneCount = forwardCount + backCount - 1
@@ -137,13 +141,12 @@ class RenjuRule(
         whitePositions: List<Position<Row, Col>>,
         startPosition: Position<Row, Col>,
         direction: Pair<Int, Int>,
-        weight: Int = FORWARD_WEIGHT,
         stoneCount: Int,
     ): Pair<Int, Int> {
         val (startRow, startCol) = startPosition
         var sameStoneCount = DEFAULT_SAME_STONE_COUNT
         var emptyCount = DEFAULT_EMPTY_COUNT
-        var (currentRow, currentCol) = Pair(startRow + direction.first * weight, startCol + direction.second * weight)
+        var (currentRow, currentCol) = Pair(startRow + direction.first, startCol + direction.second)
 
         while (inRange(currentRow, currentCol) &&
             !whitePositions.isPlaced(currentRow, currentCol) &&
@@ -155,15 +158,15 @@ class RenjuRule(
             val isEmpty = !hasBlackStone && !hasWhiteStone
             if (hasBlackStone) ++sameStoneCount
             if (isEmpty) ++emptyCount
-            currentRow += direction.first * weight
-            currentCol += direction.second * weight
+            currentRow += direction.first
+            currentCol += direction.second
         }
-        currentRow -= direction.first * weight
-        currentCol -= direction.second * weight
+        currentRow -= direction.first
+        currentCol -= direction.second
         while ((startRow != currentRow || startCol != currentCol) && !blackPositions.isPlaced(currentRow, currentCol)) {
             emptyCount -= 1
-            currentRow -= direction.first * weight
-            currentCol -= direction.second * weight
+            currentRow -= direction.first
+            currentCol -= direction.second
         }
         return Pair(sameStoneCount, emptyCount)
     }
@@ -189,12 +192,6 @@ class RenjuRule(
 
 
     companion object {
-        private val RIGHT_DIRECTION = Pair(1, 0)
-        private val TOP_DIRECTION = Pair(0, 1)
-        private val RIGHT_TOP_DIRECTION = Pair(1, 1)
-        private val LEFT_BOTTOM_DIRECTION = Pair(-1, 1)
-        private val directions = listOf(RIGHT_DIRECTION, TOP_DIRECTION, RIGHT_TOP_DIRECTION, LEFT_BOTTOM_DIRECTION)
-
         private const val FORWARD_WEIGHT = 1
         private const val BACK_WEIGHT = -1
 
