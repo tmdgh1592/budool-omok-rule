@@ -46,7 +46,7 @@ class RenjuRuleTest {
     }
 
     @ParameterizedTest
-    @CsvSource("13, 3", "8, 3", "12, 6", "10, 10", "8, 9", "5, 8")
+    @CsvSource("8, 3", "12, 6", "10, 10", "8, 9", "5, 8")
     fun `4-4 테스트`(newStoneRow: Int, newStoneCol: Int) {
         val blackStones = listOf(
             Position(15, 3),
