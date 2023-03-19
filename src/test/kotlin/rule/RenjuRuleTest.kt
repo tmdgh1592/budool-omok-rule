@@ -43,8 +43,9 @@ class RenjuRuleTest {
         )
         val whiteStones = listOf(Point(9, 9))
         val newStone = Point(3, 5)
+        val isBlackStone = true
 
-        val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, Foul.DOUBLE_THREE)
+        val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, Foul.DOUBLE_THREE, isBlackStone)
         assertThat(expected).isEqualTo(KoRule.KO_DOUBLE_THREE)
     }
 
@@ -79,8 +80,9 @@ class RenjuRuleTest {
             Point(9, 8),
         )
         val newStone = Point(newStoneRow, newStoneCol)
+        val isBlackStone = true
 
-        val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, Foul.DOUBLE_FOUR)
+        val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, Foul.DOUBLE_FOUR, isBlackStone)
         assertThat(expected).isEqualTo(KoRule.KO_DOUBLE_FOUR)
     }
 
@@ -94,8 +96,9 @@ class RenjuRuleTest {
             Point(10, 10),
         )
         val newStone = Point(8, 8)
+        val isBlackStone = true
 
-        val expected = renjuRule.checkOverline(blackStones, newStone)
+        val expected = renjuRule.checkOverline(blackStones, newStone, isBlackStone)
         assertThat(expected).isEqualTo(KoRule.KO_OVERLINE)
     }
 
@@ -111,8 +114,9 @@ class RenjuRuleTest {
         )
         val whiteStones = listOf<Point>()
         val newStone = Point(5, 7)
+        val isBlackStone = true
 
-        val expected = renjuRule.checkAllFoulCondition(blackStones, whiteStones, newStone)
+        val expected = renjuRule.checkAllFoulCondition(blackStones, whiteStones, newStone, isBlackStone)
         assertThat(expected).isEqualTo(KoRule.NOT_KO)
     }
 }

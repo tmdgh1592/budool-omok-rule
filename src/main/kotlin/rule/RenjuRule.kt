@@ -19,13 +19,19 @@ class RenjuRule(
         whitePoints: List<Point>,
         startPoint: Point,
         foul: Foul,
-    ): KoRule = checkFoulByAllDirections(blackPoints, whitePoints, startPoint, foul)
+        isBlack: Boolean,
+    ): KoRule {
+        if (!isBlack) return KoRule.NOT_KO
+        return checkFoulByAllDirections(blackPoints, whitePoints, startPoint, foul)
+    }
 
 
     override fun checkOverline(
         stonesPoints: List<Point>,
         startPoint: Point,
+        isBlack: Boolean,
     ): KoRule {
+        if (!isBlack) return KoRule.NOT_KO
         if (isContinuousSameStones(stonesPoints, startPoint, OVERLINE_SIZE)) return KoRule.KO_OVERLINE
         return KoRule.NOT_KO
     }
