@@ -18,28 +18,28 @@ class RenjuRuleTest {
     @CsvSource("3, 5", "12, 4", "3, 5", "4, 11", "11, 12")
     fun `3-3 테스트`() {
         val blackStones = listOf(
-            Position(3, 3),
-            Position(3, 4),
-            Position(4, 4),
-            Position(5, 3),
-            Position(12, 3),
-            Position(12, 5),
-            Position(13, 4),
-            Position(14, 4),
-            Position(6, 2),
-            Position(5, 5),
-            Position(6, 5),
-            Position(3, 11),
-            Position(6, 11),
-            Position(4, 13),
-            Position(4, 14),
-            Position(9, 14),
-            Position(10, 13),
-            Position(12, 13),
-            Position(9, 10),
+            Point(3, 3),
+            Point(3, 4),
+            Point(4, 4),
+            Point(5, 3),
+            Point(12, 3),
+            Point(12, 5),
+            Point(13, 4),
+            Point(14, 4),
+            Point(6, 2),
+            Point(5, 5),
+            Point(6, 5),
+            Point(3, 11),
+            Point(6, 11),
+            Point(4, 13),
+            Point(4, 14),
+            Point(9, 14),
+            Point(10, 13),
+            Point(12, 13),
+            Point(9, 10),
         )
-        val whiteStones = listOf(Position(9, 9))
-        val newStone = Position(3, 5)
+        val whiteStones = listOf(Point(9, 9))
+        val newStone = Point(3, 5)
 
         val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, FoulType.THREE_TO_THREE)
         assertThat(expected).isEqualTo(KoRule.KO_THREE_TO_THREE)
@@ -49,33 +49,33 @@ class RenjuRuleTest {
     @CsvSource("8, 3", "12, 6", "10, 10", "8, 9", "5, 8")
     fun `4-4 테스트`(newStoneRow: Int, newStoneCol: Int) {
         val blackStones = listOf(
-            Position(15, 3),
-            Position(14, 3),
-            Position(12, 3),
-            Position(11, 3),
-            Position(10, 3),
-            Position(12, 4),
-            Position(12, 7),
-            Position(12, 9),
-            Position(12, 10),
-            Position(9, 10),
-            Position(8, 10),
-            Position(6, 10),
-            Position(8, 11),
-            Position(8, 8),
-            Position(7, 8),
-            Position(6, 8),
-            Position(6, 5),
-            Position(5, 5),
-            Position(5, 6),
-            Position(5, 7),
-            Position(4, 7),
+            Point(15, 3),
+            Point(14, 3),
+            Point(12, 3),
+            Point(11, 3),
+            Point(10, 3),
+            Point(12, 4),
+            Point(12, 7),
+            Point(12, 9),
+            Point(12, 10),
+            Point(9, 10),
+            Point(8, 10),
+            Point(6, 10),
+            Point(8, 11),
+            Point(8, 8),
+            Point(7, 8),
+            Point(6, 8),
+            Point(6, 5),
+            Point(5, 5),
+            Point(5, 6),
+            Point(5, 7),
+            Point(4, 7),
         )
         val whiteStones = listOf(
-            Position(5, 4),
-            Position(9, 8),
+            Point(5, 4),
+            Point(9, 8),
         )
-        val newStone = Position(newStoneRow, newStoneCol)
+        val newStone = Point(newStoneRow, newStoneCol)
 
         val expected = renjuRule.checkFoul(blackStones, whiteStones, newStone, FoulType.FOUR_TO_FOUR)
         assertThat(expected).isEqualTo(KoRule.KO_FOUR_TO_FOUR)
@@ -84,13 +84,13 @@ class RenjuRuleTest {
     @Test
     fun `장목 테스트`() {
         val blackStones = listOf(
-            Position(5, 5),
-            Position(6, 6),
-            Position(7, 7),
-            Position(9, 9),
-            Position(10, 10),
+            Point(5, 5),
+            Point(6, 6),
+            Point(7, 7),
+            Point(9, 9),
+            Point(10, 10),
         )
-        val newStone = Position(8, 8)
+        val newStone = Point(8, 8)
 
         val expected = renjuRule.checkOverline(blackStones, newStone)
         assertThat(expected).isEqualTo(KoRule.KO_OVERLINE)

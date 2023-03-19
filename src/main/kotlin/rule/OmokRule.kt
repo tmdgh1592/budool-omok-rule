@@ -4,59 +4,56 @@ typealias Row = Int
 typealias Col = Int
 typealias MoveWeight = Int
 
-typealias Position<R, C> = Pair<R, C>
 typealias Direction<R, C> = Pair<R, C>
 
 abstract class OmokRule(
-    private val boardWidth: Row,
-    private val boardHeight: Col,
+    protected val boardWidth: Row,
+    protected val boardHeight: Col,
 ) {
     /**
      * The function will return True if any of the three forbidden moves '3-3', '4-4', and 'overline' is detected.
-     * @param blackPositions List of pairs for row and column of black stones.
-     * @param whitePositions List of pairs for row and column of white stones.
-     * @param startPosition The row and column of the stone that is being placed.
+     * @param blackPoints List of pairs for row and column of black stones.
+     * @param whitePoints List of pairs for row and column of white stones.
+     * @param startPoint The row and column of the stone that is being placed.
      * @return The result of checking all numbers.
      * */
     fun checkAll(
-        blackPositions: List<Position<Row, Col>>,
-        whitePositions: List<Position<Row, Col>>,
-        startPosition: Position<Row, Col>,
+        blackPoints: List<Point>,
+        whitePoints: List<Point>,
+        startPoint: Point,
     ): KoRule = if (listOf(
-            checkFoul(blackPositions, whitePositions, startPosition, FoulType.THREE_TO_THREE),
-            checkFoul(blackPositions, whitePositions, startPosition, FoulType.FOUR_TO_FOUR),
-            checkOverline(blackPositions, startPosition)
+            checkFoul(blackPoints, whitePoints, startPoint, FoulType.THREE_TO_THREE),
+            checkFoul(blackPoints, whitePoints, startPoint, FoulType.FOUR_TO_FOUR),
+            checkOverline(blackPoints, startPoint)
         ).any { it.state }
     ) KoRule.KO_ALL else KoRule.NOT_KO
 
 
     /**
      * check 'three-three' point or 'four-four' point according to the given 'foul type'
-     * @param blackPositions List of pairs for row and column of black stones.
-     * @param whitePositions List of pairs for row and column of white stones.
-     * @param startPosition The row and column of the stone that is being placed.
+     * @param blackPoints List of pairs for row and column of black stones.
+     * @param whitePoints List of pairs for row and column of white stones.
+     * @param startPoint The row and column of the stone that is being placed.
      * @return Whether the given row and column correspond to 3-3 or 4-4 according to the given 'foul type'.
      * */
     abstract fun checkFoul(
-        blackPositions: List<Position<Row, Col>>,
-        whitePositions: List<Position<Row, Col>>,
-        startPosition: Position<Row, Col>,
+        blackPoints: List<Point>,
+        whitePoints: List<Point>,
+        startPoint: Point,
         foulType: FoulType,
     ): KoRule
 
 
     /**
      * Check 'overline' pattern.
-     * @param stonesPositions List of stone positions for the given row and column to check for overline.
-     * @param startPosition The row and column of the stone that is being placed.
+     * @param stonesPoints List of stone points for the given row and column to check for overline.
+     * @param startPoint The row and column of the stone that is being placed.
      * @return Boolean value indicating whether it is overline.
      * */
     abstract fun checkOverline(
-        stonesPositions: List<Position<Row, Col>>,
-        startPosition: Position<Row, Col>,
+        stonesPoints: List<Point>,
+        startPoint: Point,
     ): KoRule
 
-    protected fun inRange(row: Int, col: Int) = (row in 1..boardHeight) && (col in 1..boardWidth)
-
-    protected fun List<Position<Row, Col>>.isPlaced(row: Int, col: Int): Boolean = contains(Pair(row, col))
+    protected infix fun List<Point>.isPlaced(point: Point): Boolean = contains(point)
 }

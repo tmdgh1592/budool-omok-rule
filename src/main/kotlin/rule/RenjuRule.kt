@@ -10,22 +10,22 @@ class RenjuRule(
 ) : OmokRule(boardWidth, boardHeight) {
 
     override fun checkFoul(
-        blackPositions: List<Position<Row, Col>>,
-        whitePositions: List<Position<Row, Col>>,
-        startPosition: Position<Row, Col>,
+        blackPoints: List<Point>,
+        whitePoints: List<Point>,
+        startPoint: Point,
         foulType: FoulType,
-    ): KoRule = checkFoulByAllDirections(blackPositions, whitePositions, startPosition, foulType)
+    ): KoRule = checkFoulByAllDirections(blackPoints, whitePoints, startPoint, foulType)
 
 
     override fun checkOverline(
-        stonesPositions: List<Position<Row, Col>>,
-        startPosition: Position<Row, Col>,
+        stonesPoints: List<Point>,
+        startPoint: Point,
     ): KoRule {
         val dirIterator = Directions().iterator()
 
         while (dirIterator.hasNext()) {
-            val forwardCount = findLongOmok(stonesPositions, startPosition, dirIterator.next())
-            val backCount = findLongOmok(stonesPositions, startPosition, dirIterator.next())
+            val forwardCount = findLongOmok(stonesPoints, startPoint, dirIterator.next())
+            val backCount = findLongOmok(stonesPoints, startPoint, dirIterator.next())
             val totalMoveCount = forwardCount + backCount - 1
             if (totalMoveCount >= OVERLINE_SIZE) return KoRule.KO_OVERLINE
         }
@@ -34,9 +34,9 @@ class RenjuRule(
 
 
     private fun checkFoulByAllDirections(
-        blackPositions: List<Position<Row, Col>>,
-        whitePositions: List<Position<Row, Col>>,
-        startPosition: Position<Row, Col>,
+        blackPoints: List<Point>,
+        whitePoints: List<Point>,
+        startPoint: Point,
         foulType: FoulType,
     ): KoRule {
         var continuousStones = 0
@@ -47,13 +47,13 @@ class RenjuRule(
             val backDir = dirIterator.next()
 
             val (forwardCount, forwardEmptyCount) = findStraight(
-                blackPositions, whitePositions,
-                startPosition, forwardDir,
+                blackPoints, whitePoints,
+                startPoint, forwardDir,
                 foulType,
             )
             val (backCount, backEmptyCount) = findStraight(
-                blackPositions, whitePositions,
-                startPosition, backDir,
+                blackPoints, whitePoints,
+                startPoint, backDir,
                 foulType,
             )
             val totalStoneCount = forwardCount + backCount - 1
@@ -62,7 +62,7 @@ class RenjuRule(
             when (foulType) {
                 FoulType.THREE_TO_THREE -> {
                     if (totalStoneCount == foulType.size && totalEmptyCount <= MAX_EMPTY_SIZE) {
-                        val blockedStatus = isBlockedByWhiteStoneInSix(whitePositions, startPosition, forwardDir)
+                        val blockedStatus = isBlockedByWhiteStoneInSix(whitePoints, startPoint, forwardDir)
                         if (blockedStatus == WhiteBlockedStatus.NON_BLOCK) continuousStones++
                         if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_THREE_TO_THREE
                     }
@@ -81,16 +81,16 @@ class RenjuRule(
 
 
     private fun isBlockedByWhiteStoneInSix(
-        whitePositions: List<Position<Row, Col>>,
-        position: Position<Row, Col>,
+        whitePoints: List<Point>,
+        point: Point,
         direction: Direction<Row, Col>,
     ): WhiteBlockedStatus {
         val (oneDirMoveCount, oneDirFound) = checkWhite(
-            whitePositions, position,
+            whitePoints, point,
             direction, FORWARD_WEIGHT,
         )
         val (otherDirMoveCount, otherDirFound) = checkWhite(
-            whitePositions, position,
+            whitePoints, point,
             direction, BACK_WEIGHT,
         )
         val totalMoveCount = oneDirMoveCount + otherDirMoveCount
@@ -102,75 +102,71 @@ class RenjuRule(
 
 
     private fun checkWhite(
-        whiteStones: List<Position<Row, Col>>,
-        position: Position<Row, Col>,
+        whiteStones: List<Point>,
+        point: Point,
         direction: Direction<Row, Col>,
         weight: MoveWeight,
     ): Pair<Int, Boolean> {
-        var (curRow, curCol) = Pair(
-            position.first + direction.first * weight,
-            position.second + direction.second * weight
-        )
+        val rowStep = direction.first * weight
+        val colStep = direction.second * weight
+        var curPoint = point.move(rowStep, colStep)
         var moveCount = 0
-        while (inRange(curRow, curCol) && moveCount <= WhiteBlockedStatus.INNER_DISTANCE) {
+        while (curPoint.inRange(boardWidth, boardHeight) && moveCount <= WhiteBlockedStatus.INNER_DISTANCE) {
             moveCount++
-            if (whiteStones.isPlaced(curRow, curCol)) return Pair(moveCount, true)
-            curRow += direction.first * weight
-            curCol += direction.second * weight
+            if (whiteStones isPlaced curPoint) return Pair(moveCount, true)
+            curPoint = curPoint.move(rowStep, colStep)
         }
         return Pair(moveCount, false)
     }
 
 
     private fun findStraight(
-        blackPositions: List<Position<Row, Col>>,
-        whitePositions: List<Position<Row, Col>>,
-        startPosition: Position<Row, Col>,
-        direction: Pair<Int, Int>,
+        blackPoints: List<Point>,
+        whitePoints: List<Point>,
+        startPoint: Point,
+        direction: Direction<Row, Col>,
         foulType: FoulType,
     ): Pair<Int, Int> {
-        val (startRow, startCol) = startPosition
         var sameStoneCount = DEFAULT_SAME_STONE_COUNT
         var emptyCount = DEFAULT_EMPTY_COUNT
-        var (currentRow, currentCol) = Pair(startRow + direction.first, startCol + direction.second)
+        val rowStep = direction.first
+        val colStep = direction.second
+        var curPoint = startPoint.move(rowStep, colStep)
 
-        while (inRange(currentRow, currentCol) &&
-            !whitePositions.isPlaced(currentRow, currentCol) &&
+        while (curPoint.inRange(boardWidth, boardHeight) &&
+            !whitePoints.isPlaced(curPoint) &&
             emptyCount <= MAX_EMPTY_SIZE &&
             sameStoneCount < foulType.size
         ) {
-            val hasBlackStone = blackPositions.isPlaced(currentRow, currentCol)
-            val hasWhiteStone = whitePositions.isPlaced(currentRow, currentCol)
+            val hasBlackStone = blackPoints isPlaced curPoint
+            val hasWhiteStone = whitePoints isPlaced curPoint
             val isEmpty = !hasBlackStone && !hasWhiteStone
             if (hasBlackStone) ++sameStoneCount
             if (isEmpty) ++emptyCount
-            currentRow += direction.first
-            currentCol += direction.second
+            curPoint = curPoint.move(rowStep, colStep)
         }
-        currentRow -= direction.first
-        currentCol -= direction.second
-        while ((startRow != currentRow || startCol != currentCol) && !blackPositions.isPlaced(currentRow, currentCol)) {
+        curPoint = curPoint.move(-rowStep, -colStep)
+        while (startPoint != curPoint && !(blackPoints isPlaced curPoint)) {
             emptyCount -= 1
-            currentRow -= direction.first
-            currentCol -= direction.second
+            curPoint = curPoint.move(-rowStep, -colStep)
         }
         return Pair(sameStoneCount, emptyCount)
     }
 
 
     private fun findLongOmok(
-        stonesPositions: List<Position<Row, Col>>,
-        startPosition: Position<Row, Col>,
+        stonesPoints: List<Point>,
+        startPoint: Point,
         direction: Pair<Int, Int>,
     ): Int {
-        val (startRow, startCol) = startPosition
         var sameStoneCount = DEFAULT_SAME_STONE_COUNT
-        var (currentRow, currentCol) = Pair(startRow + direction.first, startCol + direction.second)
+        val rowStep = direction.first
+        val colStep = direction.second
+        var curPoint = startPoint.move(rowStep, colStep)
 
-        while (inRange(currentRow, currentCol) && stonesPositions.isPlaced(currentRow, currentCol)) {
+        while (curPoint.inRange(boardWidth, boardHeight) && stonesPoints isPlaced curPoint) {
             sameStoneCount++
-            currentRow += direction.first
-            currentCol += direction.second
+            curPoint = curPoint.move(rowStep, colStep)
         }
         return sameStoneCount
     }
