@@ -8,18 +8,14 @@ class RenjuRule(
         blackPositions: List<Position<Row, Col>>,
         whitePositions: List<Position<Row, Col>>,
         startPosition: Position<Row, Col>,
-    ): KoRule {
-        return check33AllDirections(blackPositions, whitePositions, startPosition)
-        // blackPlayer에서 돌을 놓고 이 규칙을 확인한다면, 이미 blackStones에는 돌이 들어간 상태니까 startStone을 삭제하고 blackStones.getLastStone으로 해결할 수 있을 것 같음!
-        // "금지된 수를 놓으면서 동시에 5도 만들어지는 경우에는 흑 승리로 인정된다." -> 놓고나서 이겼는지 체크하고, 이기지도 않았는데 금수인 경우에는 패배로 바꿔야할 것 같음
-    }
+    ): KoRule = checkAllThreeToThreeDirections(blackPositions, whitePositions, startPosition)
 
     override fun checkFourToFourPoint(
         blackPositions: List<Position<Row, Col>>,
         whitePositions: List<Position<Row, Col>>,
         startPosition: Position<Row, Col>,
     ): KoRule {
-        return check44AllDirections(blackPositions, whitePositions, startPosition)
+        return checkAllFourToFourDirections(blackPositions, whitePositions, startPosition)
     }
 
     override fun checkOverline(
@@ -71,7 +67,7 @@ class RenjuRule(
         return KoRule.NOT_KO
     }
 
-    private fun check44AllDirections(
+    private fun checkAllFourToFourDirections(
         blackPositions: List<Position<Row, Col>>,
         whitePositions: List<Position<Row, Col>>,
         startPosition: Position<Row, Col>,
