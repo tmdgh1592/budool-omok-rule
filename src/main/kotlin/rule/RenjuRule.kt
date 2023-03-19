@@ -162,7 +162,7 @@ class RenjuRule(
     private fun findLongOmok(
         stonesPoints: List<Point>,
         startPoint: Point,
-        direction: Pair<Int, Int>,
+        direction: Direction<Row, Col>,
     ): Int {
         var sameStoneCount = DEFAULT_SAME_STONE_COUNT
         val rowStep = direction.first
