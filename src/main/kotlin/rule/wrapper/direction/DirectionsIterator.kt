@@ -5,7 +5,7 @@ import rule.Direction
 import rule.other.Iterator
 import rule.Row
 
-class DirectionsIterator(items: List<Direction<Row, Col>>) : Iterator<Direction<Row, Col>> {
+internal class DirectionsIterator(items: List<Direction<Row, Col>>) : Iterator<Direction<Row, Col>> {
     private val _items: MutableList<Direction<Row, Col>> = items.deepCopy()
 
     override fun hasNext(): Boolean = _items.isNotEmpty()

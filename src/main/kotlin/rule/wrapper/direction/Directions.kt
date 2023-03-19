@@ -5,7 +5,7 @@ import rule.Direction
 import rule.Row
 import rule.other.Iterator
 
-class Directions {
+internal class Directions {
     fun iterator(): Iterator<Direction<Row, Col>> = DirectionsIterator(all())
 
     companion object {

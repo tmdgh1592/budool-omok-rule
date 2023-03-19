@@ -1,6 +1,6 @@
 package rule.other
 
-interface Iterator<T> {
+internal interface Iterator<T> {
     fun hasNext(): Boolean
     fun next(): T
 }

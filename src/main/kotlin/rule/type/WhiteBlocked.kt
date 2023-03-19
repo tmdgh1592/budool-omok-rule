@@ -1,6 +1,6 @@
 package rule.type
 
-enum class WhiteBlocked(val state: Boolean) {
+internal enum class WhiteBlocked(val state: Boolean) {
     BLOCKED(true),
     NON_BLOCK(false);
 
