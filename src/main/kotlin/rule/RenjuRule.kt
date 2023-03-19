@@ -1,10 +1,8 @@
 package rule
 
 import rule.KoRule.Companion.FOUL_CONDITION_SIZE
-import rule.KoRule.Companion.FOUR_TO_FOUR_SIZE
 import rule.KoRule.Companion.MAX_EMPTY_SIZE
 import rule.KoRule.Companion.OVERLINE_SIZE
-import rule.KoRule.Companion.THREE_TO_THREE_SIZE
 
 class RenjuRule(
     boardWidth: Int = DEFAULT_BOARD_WIDTH,
@@ -53,15 +51,15 @@ class RenjuRule(
             val (forwardCount, forwardEmptyCount) = findStraight(
                 blackPositions, whitePositions,
                 startPosition, forwardDir,
-                THREE_TO_THREE_SIZE,
+                FoulType.THREE_TO_THREE,
             )
             val (backCount, backEmptyCount) = findStraight(
                 blackPositions, whitePositions,
                 startPosition, dirIterator.next(),
-                THREE_TO_THREE_SIZE,
+                FoulType.THREE_TO_THREE,
             )
 
-            if (forwardCount + backCount - 1 == THREE_TO_THREE_SIZE &&
+            if (forwardCount + backCount - 1 == FoulType.THREE_TO_THREE.size &&
                 forwardEmptyCount + backEmptyCount <= MAX_EMPTY_SIZE
             ) {
                 val blockedStatus = isBlockedByWhiteStoneInSix(whitePositions, startPosition, forwardDir)
@@ -85,17 +83,17 @@ class RenjuRule(
             val (forwardCount, forwardEmptyCount) = findStraight(
                 blackPositions, whitePositions,
                 startPosition, dirIterator.next(),
-                FOUR_TO_FOUR_SIZE,
+                FoulType.FOUR_TO_FOUR,
             )
             val (backCount, backEmptyCount) = findStraight(
                 blackPositions, whitePositions,
                 startPosition, dirIterator.next(),
-                FOUR_TO_FOUR_SIZE,
+                FoulType.FOUR_TO_FOUR,
             )
 
             val stoneCount = forwardCount + backCount - 1
             if (stoneCount >= 5 && forwardEmptyCount == 1 && backEmptyCount == 1) return KoRule.KO_FOUR_TO_FOUR
-            if (stoneCount == FOUR_TO_FOUR_SIZE && forwardEmptyCount + backEmptyCount <= MAX_EMPTY_SIZE) {
+            if (stoneCount == FoulType.FOUR_TO_FOUR.size && forwardEmptyCount + backEmptyCount <= MAX_EMPTY_SIZE) {
                 fourCount++
                 if (fourCount == FOUL_CONDITION_SIZE) return KoRule.KO_FOUR_TO_FOUR
             }
@@ -151,7 +149,7 @@ class RenjuRule(
         whitePositions: List<Position<Row, Col>>,
         startPosition: Position<Row, Col>,
         direction: Pair<Int, Int>,
-        stoneCount: Int,
+        foulType: FoulType,
     ): Pair<Int, Int> {
         val (startRow, startCol) = startPosition
         var sameStoneCount = DEFAULT_SAME_STONE_COUNT
@@ -161,7 +159,7 @@ class RenjuRule(
         while (inRange(currentRow, currentCol) &&
             !whitePositions.isPlaced(currentRow, currentCol) &&
             emptyCount <= MAX_EMPTY_SIZE &&
-            sameStoneCount < stoneCount
+            sameStoneCount < foulType.size
         ) {
             val hasBlackStone = blackPositions.isPlaced(currentRow, currentCol)
             val hasWhiteStone = whitePositions.isPlaced(currentRow, currentCol)
