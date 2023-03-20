@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    val currentVersion = "v1.0.2-alpha"
+    val currentVersion = "v1.0.3-alpha"
     implementation("com.github.tmdgh1592:budool-omok-rule:$currentVersion")
 ```
 
@@ -60,6 +60,46 @@ data class Point(val row: Row, val col: Col)
 ## OmokRule.kt
 
 OmokRule has `BlackRenjuRule.kt` and `WhiteRenjuRule.kt` as subclasses.
+
+### Example of use
+```kotlin
+val rule: OmokRule = BlackRenjuRule(15, 15) // if player is WhitePlayer, you must use WhiteRenjuRule.
+val blackPlayer: Player = BlackPlayer()
+val newPoint = Point(3, 3)
+blackPlayer.putStone(newStone, rule)
+
+------------------------------------------------------
+
+// Player
+data class BlackPlayer(private val points: List<Point>): Player {
+    
+    fun putStone(newPoint: Point, otherPoints, rule: OmokRule): Player {
+        /* If you just want to know whether you win or not, write something like this: */
+        if (rule.checkWin(points, otherPoints, newPoint)) {
+            // Logic in case of win
+            ...
+        } else {
+            // Logic when only stones are placed
+            ...
+        }
+        
+        /* OR */
+        
+        /* If you need to process all rules, write as follows. */
+        val violateType = rule.checkAnyFoulCondition(points, otherPoints, newPoint)
+        when(violateType) {
+            // Logic to handle if 3-3
+            Violation.DOUBLE_THREE -> ... 
+            // Logic to handle if 4-4
+            Violation.DOUBLE_FOUR -> ...
+            // Logic to handle if overline(jangmok)
+            Violation.OVERLINE -> ...
+            // If no rules are violated, check whether you win or not.
+            Violation.NONE -> rule.checkWin(points, otherPoints, newPoint)
+        }
+    }
+}
+```
 
 ### constructor
 
