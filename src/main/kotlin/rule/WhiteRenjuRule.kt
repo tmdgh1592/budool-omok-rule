@@ -1,7 +1,7 @@
 package rule
 
 import rule.type.Foul
-import rule.type.KoRule
+import rule.type.Violation
 import rule.wrapper.point.Point
 
 class WhiteRenjuRule(
@@ -13,12 +13,12 @@ class WhiteRenjuRule(
         whitePoints: List<Point>,
         startPoint: Point,
         foul: Foul,
-    ): KoRule = KoRule.NOT_KO
+    ): Violation = Violation.NONE
 
     override fun checkOverline(
         stonesPoints: List<Point>,
         startPoint: Point,
-    ): KoRule = KoRule.NOT_KO
+    ): Violation = Violation.NONE
 
     companion object {
         private const val DEFAULT_BOARD_WIDTH = 15

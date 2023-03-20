@@ -1,7 +1,7 @@
 package rule
 
 import rule.type.Foul
-import rule.type.KoRule
+import rule.type.Violation
 import rule.wrapper.direction.Directions
 import rule.wrapper.point.Point
 
@@ -30,7 +30,7 @@ abstract class OmokRule(
         val satisfyWin = checkSerialSameStonesBiDirection(blackPoints, startPoint, WIN_STANDARD)
         val koState = checkAllFoulCondition(blackPoints, whitePoints, startPoint)
 
-        if (satisfyWin && koState != KoRule.KO_OVERLINE) return true
+        if (satisfyWin && koState != Violation.OVERLINE) return true
         return false
     }
 
@@ -69,7 +69,7 @@ abstract class OmokRule(
         whitePoints: List<Point>,
         startPoint: Point,
         foul: Foul,
-    ): KoRule
+    ): Violation
 
     /**
      * Check 'overline' pattern.
@@ -82,7 +82,7 @@ abstract class OmokRule(
     abstract fun checkOverline(
         stonesPoints: List<Point>,
         startPoint: Point,
-    ): KoRule
+    ): Violation
 
     /**
      * When a stone is placed at a specific location, it checks if the same number of stones are in a row.

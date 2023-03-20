@@ -1,10 +1,10 @@
 package rule
 
 import rule.type.Foul
-import rule.type.KoRule
-import rule.type.KoRule.Companion.FOUL_CONDITION_SIZE
-import rule.type.KoRule.Companion.MAX_EMPTY_SIZE
-import rule.type.KoRule.Companion.OVERLINE_SIZE
+import rule.type.Violation
+import rule.type.Violation.Companion.FOUL_CONDITION_SIZE
+import rule.type.Violation.Companion.MAX_EMPTY_SIZE
+import rule.type.Violation.Companion.OVERLINE_SIZE
 import rule.type.WhiteBlocked
 import rule.wrapper.direction.Directions
 import rule.wrapper.point.Point
@@ -19,14 +19,14 @@ class BlackRenjuRule(
         whitePoints: List<Point>,
         startPoint: Point,
         foul: Foul,
-    ): KoRule = checkFoulByAllDirections(blackPoints, whitePoints, startPoint, foul)
+    ): Violation = checkFoulByAllDirections(blackPoints, whitePoints, startPoint, foul)
 
     override fun checkOverline(
         stonesPoints: List<Point>,
         startPoint: Point,
-    ): KoRule {
-        if (checkSerialSameStonesBiDirection(stonesPoints, startPoint, OVERLINE_SIZE)) return KoRule.KO_OVERLINE
-        return KoRule.NOT_KO
+    ): Violation {
+        if (checkSerialSameStonesBiDirection(stonesPoints, startPoint, OVERLINE_SIZE)) return Violation.OVERLINE
+        return Violation.NONE
     }
 
     private fun checkFoulByAllDirections(
@@ -34,7 +34,7 @@ class BlackRenjuRule(
         whitePoints: List<Point>,
         startPoint: Point,
         foul: Foul,
-    ): KoRule {
+    ): Violation {
         var continuousStones = 0
         val dirIterator = Directions().iterator()
 
@@ -58,18 +58,18 @@ class BlackRenjuRule(
                     if (totalStoneCount == foul.size && totalEmptyCount <= MAX_EMPTY_SIZE) {
                         val blockedStatus = isBlockedByWhiteStoneInSix(whitePoints, startPoint, forwardDir)
                         if (blockedStatus == WhiteBlocked.NON_BLOCK) continuousStones++
-                        if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_DOUBLE_THREE
+                        if (continuousStones == FOUL_CONDITION_SIZE) return Violation.DOUBLE_THREE
                     }
                 }
 
                 Foul.DOUBLE_FOUR -> {
-                    if (totalStoneCount > foul.size && forwardEmptyCount == 1 && backEmptyCount == 1) return KoRule.KO_DOUBLE_FOUR
+                    if (totalStoneCount > foul.size && forwardEmptyCount == 1 && backEmptyCount == 1) return Violation.DOUBLE_FOUR
                     if (totalStoneCount == foul.size && totalEmptyCount <= MAX_EMPTY_SIZE) continuousStones++
-                    if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_DOUBLE_FOUR
+                    if (continuousStones == FOUL_CONDITION_SIZE) return Violation.DOUBLE_FOUR
                 }
             }
         }
-        return KoRule.NOT_KO
+        return Violation.NONE
     }
 
     private fun isBlockedByWhiteStoneInSix(

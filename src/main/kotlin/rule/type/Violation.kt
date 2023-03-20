@@ -1,11 +1,11 @@
 package rule.type
 
-enum class KoRule(val state: Boolean) {
-    KO_ALL(true),
-    KO_DOUBLE_THREE(true),
-    KO_DOUBLE_FOUR(true),
-    KO_OVERLINE(true),
-    NOT_KO(false);
+enum class Violation(val state: Boolean) {
+    ALL(true),
+    DOUBLE_THREE(true),
+    DOUBLE_FOUR(true),
+    OVERLINE(true),
+    NONE(false);
 
     companion object {
         const val OVERLINE_SIZE = 6

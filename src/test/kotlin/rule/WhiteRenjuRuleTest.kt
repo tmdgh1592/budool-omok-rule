@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import rule.type.Foul
-import rule.type.KoRule
+import rule.type.Violation
 import rule.wrapper.point.Point
 
 class WhiteRenjuRuleTest {
@@ -34,7 +34,7 @@ class WhiteRenjuRuleTest {
 
         val expected = renjuRule.checkDoubleFoul(blackStones, whiteStones, newStone, Foul.DOUBLE_THREE)
 
-        assertThat(expected).isEqualTo(KoRule.NOT_KO)
+        assertThat(expected).isEqualTo(Violation.NONE)
     }
 
     @ParameterizedTest
@@ -56,7 +56,7 @@ class WhiteRenjuRuleTest {
 
         val expected = renjuRule.checkAllFoulCondition(blackStones, whiteStones, newStone)
 
-        assertThat(expected).isEqualTo(KoRule.NOT_KO)
+        assertThat(expected).isEqualTo(Violation.NONE)
     }
 
     @Test
@@ -69,6 +69,6 @@ class WhiteRenjuRuleTest {
 
         val expected = renjuRule.checkOverline(whiteStones, newStone)
 
-        assertThat(expected).isEqualTo(KoRule.NOT_KO)
+        assertThat(expected).isEqualTo(Violation.NONE)
     }
 }
