@@ -1,12 +1,13 @@
-plugins {
-    kotlin("jvm") version "1.8.10"
-    id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
-    id("maven-publish")
-}
-
 val groupName = "com.github.tmdgh1592"
 val projectArtifactId = "budool-omok-rule"
 val currentVersion = "v1.0.1-alpha"
+
+plugins {
+    java
+    kotlin("jvm") version "1.8.10"
+    id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
+    `maven-publish`
+}
 
 group = groupName
 version = currentVersion
@@ -38,10 +39,11 @@ tasks {
 
 publishing {
     publications {
-        register<MavenPublication>("release") {
+        register<MavenPublication>("maven") {
             groupId = groupName
             artifactId = projectArtifactId
             version = currentVersion
+            from(components["kotlin"])
         }
     }
 }
