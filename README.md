@@ -85,12 +85,12 @@ val startPoint: Point = Point(row = 7, col = 7)
 val result = omokRule.checkWin(blackPoints, whitePoints, startPoint)
 ```
 
-### checkAllFoulCondition()
+### checkAnyFoulCondition()
 
 This is a method to check all foul condition including `double three (3-3)`, `double four (4-4)`
 and `overline(jangmok)`.  
-If any of the above rules are applicable, `KoRule.KO_ALL` is returned.  
-Otherwise, it returns `KoRule.NOT_KO`.
+If any of the above rules are applicable, return the violating type.  
+Otherwise, it returns `Violation.NONE`.
 
 ```kotlin
 val omokRule: OmokRule = BlackRenjuRule() // or WhiteRenjuRule()
@@ -98,16 +98,16 @@ val blackPoints: List<Point> = listOf(Point(3, 3), Point(4, 4))
 val whitePoints: List<Point> = listOf(Point(3, 4), Point(4, 3))
 val startPoint: Point = Point(row = 5, col = 5)
 
-// Since none of the rules apply, KoRule.NOT_KO is returned.
-// if omokRule type is WhiteRenjuRule, it returns always KoRule.NOT_KO.
-val result = omokRule.checkAllFoulCondition(blackPoints, whitePoints, startPoint)
+// Since none of the rules apply, Violation.NONE is returned.
+// if omokRule type is WhiteRenjuRule, it returns always Violation.NONE.
+val result = omokRule.checkAnyFoulCondition(blackPoints, whitePoints, startPoint)
 ```
 
 ### checkDoubleFoul()
 
 This is a method to check `double three (3-3)` or `double four (4-4)`.  
-if it is a double foul, returns `KoRule.KO_DOUBLE_THREE` or `KoRule.KO_DOUBLE_FOUR`.
-Otherwise, if it is not a double foul, returns `KoRule.NOT_KO`.
+if it is a double foul, returns `Violation.DOUBLE_THREE` or `Violation.DOUBLE_FOUR`.
+Otherwise, if it is not a double foul, returns `Violation.NONE`.
 
 ```kotlin
 val omokRule: OmokRule = BlackRenjuRule() // or WhiteRenjuRule()
@@ -118,22 +118,22 @@ val startPoint: Point = Point(row = 5, col = 5)
 // double foul type you want to check
 val foul: Foul = Foul.DOUBLE_THREE // or -> val foul: Foul = Foul.FOUR_THREE
 
-// if omokRule type is WhiteRenjuRule, it returns always KoRule.NOT_KO.
+// if omokRule type is WhiteRenjuRule, it returns always Violation.NONE.
 val result = omokRule.checkDoubleFoul(blackPoints, whitePoints, startPoint, foul)
 ```
 
 ### checkOverline()
 
 This is a method to check if it is `overline(jangmok)`.
-if if there are more than 6 stones on the board in a row, returns `KoRule.KO_OVERLINE`.  
-Otherwise, if there are less than 6 stones, returns `KoRule.NOT_KO`.
+if if there are more than 6 stones on the board in a row, returns `Violation.OVERLINE`.  
+Otherwise, if there are less than 6 stones, returns `Violation.NONE`.
 
 ```kotlin
 val omokRule: OmokRule = BlackRenjuRule()
 val stonesPoints: List<Point> = listOf(Point(1, 1), Point(2, 2), Point(3, 3), Point(5, 5), Point(6, 6))
 val startPoint: Point = Point(4, 4)
 
-// result is KoRule.KO_OVERLINE
-// if omokRule is WhiteRenjuRule, it returns always KoRule.NOT_KO.
+// result is Violation.OVERLINE
+// if omokRule is WhiteRenjuRule, it returns always Violation.NONE.
 val result = omokRule.checkOverline(stonesPoints, startPoint)
 ```
