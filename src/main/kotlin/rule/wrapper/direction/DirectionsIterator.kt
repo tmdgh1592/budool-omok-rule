@@ -2,8 +2,8 @@ package rule.wrapper.direction
 
 import rule.Col
 import rule.Direction
-import rule.other.Iterator
 import rule.Row
+import rule.other.Iterator
 
 internal class DirectionsIterator(items: List<Direction<Row, Col>>) : Iterator<Direction<Row, Col>> {
     private val _items: MutableList<Direction<Row, Col>> = items.deepCopy()

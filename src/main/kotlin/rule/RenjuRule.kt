@@ -25,7 +25,6 @@ class RenjuRule(
         return checkFoulByAllDirections(blackPoints, whitePoints, startPoint, foul)
     }
 
-
     override fun checkOverline(
         stonesPoints: List<Point>,
         startPoint: Point,
@@ -35,7 +34,6 @@ class RenjuRule(
         if (isContinuousSameStones(stonesPoints, startPoint, OVERLINE_SIZE)) return KoRule.KO_OVERLINE
         return KoRule.NOT_KO
     }
-
 
     override fun isContinuousSameStones(
         stonesPoints: List<Point>,
@@ -52,7 +50,6 @@ class RenjuRule(
         }
         return false
     }
-
 
     private fun checkFoulByAllDirections(
         blackPoints: List<Point>,
@@ -97,11 +94,9 @@ class RenjuRule(
                     if (continuousStones == FOUL_CONDITION_SIZE) return KoRule.KO_DOUBLE_FOUR
                 }
             }
-
         }
         return KoRule.NOT_KO
     }
-
 
     private fun isBlockedByWhiteStoneInSix(
         whitePoints: List<Point>,
@@ -119,10 +114,9 @@ class RenjuRule(
         val totalMoveCount = oneDirMoveCount + otherDirMoveCount
         return WhiteBlocked.of(
             totalMoveCount <= WhiteBlocked.INNER_DISTANCE &&
-                    oneDirFound && otherDirFound
+                oneDirFound && otherDirFound
         )
     }
-
 
     private fun checkWhite(
         whiteStones: List<Point>,
@@ -141,7 +135,6 @@ class RenjuRule(
         }
         return Pair(moveCount, false)
     }
-
 
     private fun findStraight(
         blackPoints: List<Point>,
@@ -176,7 +169,6 @@ class RenjuRule(
         return Pair(sameStoneCount, emptyCount)
     }
 
-
     private fun findLongOmok(
         stonesPoints: List<Point>,
         startPoint: Point,
@@ -193,7 +185,6 @@ class RenjuRule(
         }
         return sameStoneCount
     }
-
 
     companion object {
         private const val FORWARD_WEIGHT = 1

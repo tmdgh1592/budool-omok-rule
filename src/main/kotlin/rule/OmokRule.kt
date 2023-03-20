@@ -45,7 +45,6 @@ abstract class OmokRule(
         return false
     }
 
-
     /**
      * The function will return True if any of the three forbidden moves '3-3', '4-4', and 'overline' is detected.
      *
@@ -67,7 +66,6 @@ abstract class OmokRule(
         ).any { it.state }
     ) KoRule.KO_ALL else KoRule.NOT_KO
 
-
     /**
      * check 'three-three' point or 'four-four' point according to the given 'foul type'
      *
@@ -85,7 +83,6 @@ abstract class OmokRule(
         isBlack: Boolean,
     ): KoRule
 
-
     /**
      * Check 'overline' pattern.
      *
@@ -99,7 +96,6 @@ abstract class OmokRule(
         startPoint: Point,
         isBlack: Boolean,
     ): KoRule
-
 
     /**
      * When a stone is placed at a specific location, it checks if the same number of stones are in a row.
@@ -115,7 +111,6 @@ abstract class OmokRule(
         startPoint: Point,
         sameStoneToCheck: Int,
     ): Boolean
-
 
     protected infix fun List<Point>.isPlaced(point: Point): Boolean = contains(point)
 
