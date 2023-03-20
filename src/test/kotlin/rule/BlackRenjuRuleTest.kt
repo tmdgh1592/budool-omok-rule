@@ -69,8 +69,11 @@ class BlackRenjuRuleTest {
     fun `Black stone is a foul in the case of overline`() {
         // given
         val blackStones = listOf(
-            Point(5, 5), Point(6, 6), Point(7, 7),
-            Point(9, 9), Point(10, 10),
+            Point(5, 5),
+            Point(6, 6),
+            Point(7, 7),
+            Point(9, 9),
+            Point(10, 10),
         )
         val newStone = Point(8, 8)
 
@@ -82,14 +85,36 @@ class BlackRenjuRuleTest {
     }
 
     @Test
-    fun `If 5 black stones are in a row, it is not a foul even if it is double three  or double four`() {
+    fun `If 5 black stones are in a row, it is not a foul even if it is double four`() {
         // given
         val blackStones = listOf(
-            Point(5, 5), Point(5, 6), Point(6, 7),
-            Point(7, 7), Point(5, 8), Point(5, 9),
+            Point(5, 5), Point(5, 6),
+            Point(5, 8), Point(5, 9),
+            Point(6, 6), Point(6, 8),
+            Point(4, 6), Point(4, 8),
+            Point(3, 5), Point(3, 9),
         )
         val whiteStones = listOf<Point>()
         val newStone = Point(5, 7)
+
+        // when
+        val expected = renjuRule.checkAllFoulCondition(blackStones, whiteStones, newStone)
+
+        // then
+        assertThat(expected).isEqualTo(KoRule.NOT_KO)
+    }
+
+    @Test
+    fun `If 5 black stones are in a row, it is not a foul even if it is double three`() {
+        // given
+        val blackStones = listOf(
+            Point(5, 5), Point(5, 7),
+            Point(5, 8), Point(5, 9),
+            Point(4, 5), Point(4, 6),
+            Point(6, 6), Point(6, 7),
+        )
+        val whiteStones = listOf<Point>()
+        val newStone = Point(5, 6)
 
         // when
         val expected = renjuRule.checkAllFoulCondition(blackStones, whiteStones, newStone)
