@@ -37,7 +37,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.tmdgh1592"
             artifactId = "budool-omok-rule"
-            version = "1.0.3"
+            version = "v1.0.0-alpha"
         }
     }
 }
