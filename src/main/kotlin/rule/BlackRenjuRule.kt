@@ -9,46 +9,24 @@ import rule.type.WhiteBlocked
 import rule.wrapper.direction.Directions
 import rule.wrapper.point.Point
 
-class RenjuRule(
+class BlackRenjuRule(
     boardWidth: Int = DEFAULT_BOARD_WIDTH,
     boardHeight: Int = DEFAULT_BOARD_HEIGHT,
 ) : OmokRule(boardWidth, boardHeight) {
 
-    override fun checkFoul(
+    override fun checkDoubleFoul(
         blackPoints: List<Point>,
         whitePoints: List<Point>,
         startPoint: Point,
         foul: Foul,
-        isBlack: Boolean,
-    ): KoRule {
-        if (!isBlack) return KoRule.NOT_KO
-        return checkFoulByAllDirections(blackPoints, whitePoints, startPoint, foul)
-    }
+    ): KoRule = checkFoulByAllDirections(blackPoints, whitePoints, startPoint, foul)
 
     override fun checkOverline(
         stonesPoints: List<Point>,
         startPoint: Point,
-        isBlack: Boolean,
     ): KoRule {
-        if (!isBlack) return KoRule.NOT_KO
-        if (isContinuousSameStones(stonesPoints, startPoint, OVERLINE_SIZE)) return KoRule.KO_OVERLINE
+        if (checkSerialSameStonesBiDirection(stonesPoints, startPoint, OVERLINE_SIZE)) return KoRule.KO_OVERLINE
         return KoRule.NOT_KO
-    }
-
-    override fun isContinuousSameStones(
-        stonesPoints: List<Point>,
-        startPoint: Point,
-        sameStoneToCheck: Int,
-    ): Boolean {
-        val dirIterator = Directions().iterator()
-
-        while (dirIterator.hasNext()) {
-            val forwardCount = findLongOmok(stonesPoints, startPoint, dirIterator.next())
-            val backCount = findLongOmok(stonesPoints, startPoint, dirIterator.next())
-            val totalMoveCount = forwardCount + backCount - 1
-            if (totalMoveCount >= sameStoneToCheck) return true
-        }
-        return false
     }
 
     private fun checkFoulByAllDirections(
@@ -57,7 +35,8 @@ class RenjuRule(
         startPoint: Point,
         foul: Foul,
     ): KoRule {
-        if (isContinuousSameStones(blackPoints, startPoint, WIN_STANDARD)) {
+        // Even if it is 3-3 or 4-4, it is not a KO if 5 are in a row.
+        if (checkSerialSameStonesBiDirection(blackPoints, startPoint, WIN_STANDARD)) {
             return KoRule.NOT_KO
         }
 
@@ -167,23 +146,6 @@ class RenjuRule(
             curPoint = curPoint.move(-rowStep, -colStep)
         }
         return Pair(sameStoneCount, emptyCount)
-    }
-
-    private fun findLongOmok(
-        stonesPoints: List<Point>,
-        startPoint: Point,
-        direction: Direction<Row, Col>,
-    ): Int {
-        var sameStoneCount = DEFAULT_SAME_STONE_COUNT
-        val rowStep = direction.first
-        val colStep = direction.second
-        var curPoint = startPoint.move(rowStep, colStep)
-
-        while (curPoint.inRange(boardWidth, boardHeight) && stonesPoints isPlaced curPoint) {
-            sameStoneCount++
-            curPoint = curPoint.move(rowStep, colStep)
-        }
-        return sameStoneCount
     }
 
     companion object {

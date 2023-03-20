@@ -2,6 +2,7 @@ package rule
 
 import rule.type.Foul
 import rule.type.KoRule
+import rule.wrapper.direction.Directions
 import rule.wrapper.point.Point
 
 typealias Row = Int
@@ -22,24 +23,14 @@ abstract class OmokRule(
      * @param blackPoints List of pairs for row and column of black stones.
      * @param whitePoints List of pairs for row and column of white stones.
      * @param startPoint The row and column of the stone that is being placed.
-     * @param isBlack Whether it is black or white
      *
      * @return Returns true if no fouls are played and the win conditions are met.
      * */
-    fun checkWin(
-        blackPoints: List<Point>,
-        whitePoints: List<Point>,
-        startPoint: Point,
-        isBlack: Boolean,
-    ): Boolean {
-        val isWinStandard = isContinuousSameStones(blackPoints, startPoint, WIN_STANDARD)
-        if (isBlack && isWinStandard && checkAllFoulCondition(
-                blackPoints,
-                whitePoints,
-                startPoint,
-                isBlack
-            ) == KoRule.NOT_KO
-        ) {
+    fun checkWin(blackPoints: List<Point>, whitePoints: List<Point>, startPoint: Point): Boolean {
+        val satisfyWin = checkSerialSameStonesBiDirection(blackPoints, startPoint, WIN_STANDARD)
+        val koState = checkAllFoulCondition(blackPoints, whitePoints, startPoint)
+
+        if (satisfyWin && koState == KoRule.NOT_KO) {
             return true
         }
         return false
@@ -58,11 +49,10 @@ abstract class OmokRule(
         blackPoints: List<Point>,
         whitePoints: List<Point>,
         startPoint: Point,
-        isBlack: Boolean,
     ): KoRule = if (listOf(
-            checkFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_THREE, isBlack),
-            checkFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_FOUR, isBlack),
-            checkOverline(blackPoints, startPoint, isBlack)
+            checkDoubleFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_THREE),
+            checkDoubleFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_FOUR),
+            checkOverline(blackPoints, startPoint)
         ).any { it.state }
     ) KoRule.KO_ALL else KoRule.NOT_KO
 
@@ -75,12 +65,11 @@ abstract class OmokRule(
      *
      * @return Whether the given row and column correspond to 3-3 or 4-4 according to the given 'foul type'.
      * */
-    abstract fun checkFoul(
+    abstract fun checkDoubleFoul(
         blackPoints: List<Point>,
         whitePoints: List<Point>,
         startPoint: Point,
         foul: Foul,
-        isBlack: Boolean,
     ): KoRule
 
     /**
@@ -94,7 +83,6 @@ abstract class OmokRule(
     abstract fun checkOverline(
         stonesPoints: List<Point>,
         startPoint: Point,
-        isBlack: Boolean,
     ): KoRule
 
     /**
@@ -106,16 +94,53 @@ abstract class OmokRule(
      *
      * @return Return if there are as many stones in a row as you are looking for.
      * */
-    abstract fun isContinuousSameStones(
+    fun checkSerialSameStonesBiDirection(
         stonesPoints: List<Point>,
         startPoint: Point,
         sameStoneToCheck: Int,
-    ): Boolean
+    ): Boolean {
+        val dirIterator = Directions().iterator()
+
+        while (dirIterator.hasNext()) {
+            val forwardCount = countSerialStonesOneDirection(stonesPoints, startPoint, dirIterator.next())
+            val backCount = countSerialStonesOneDirection(stonesPoints, startPoint, dirIterator.next())
+            val totalMoveCount = forwardCount + backCount - 1
+            if (totalMoveCount >= sameStoneToCheck) return true
+        }
+        return false
+    }
+
+    /**
+     * Returns the number of identical stones in a row in one direction.
+     *
+     * @param stonesPoints List of stone points for the given row and column to check for continuous.
+     * @param startPoint The row and column of the stone that is being placed.
+     * @param direction Direction you want to explore.
+     *
+     * @return The number of identical stones placed in a given direction.
+     * */
+    private fun countSerialStonesOneDirection(
+        stonesPoints: List<Point>,
+        startPoint: Point,
+        direction: Direction<Row, Col>,
+    ): Int {
+        var sameStoneCount = DEFAULT_SAME_STONE_COUNT
+        val rowStep = direction.first
+        val colStep = direction.second
+        var curPoint = startPoint.move(rowStep, colStep)
+
+        while (curPoint.inRange(boardWidth, boardHeight) && stonesPoints isPlaced curPoint) {
+            sameStoneCount++
+            curPoint = curPoint.move(rowStep, colStep)
+        }
+        return sameStoneCount
+    }
 
     protected infix fun List<Point>.isPlaced(point: Point): Boolean = contains(point)
 
     companion object {
         @JvmStatic
         protected val WIN_STANDARD: Int = 5
+        private const val DEFAULT_SAME_STONE_COUNT = 1
     }
 }
