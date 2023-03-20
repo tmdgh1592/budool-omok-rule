@@ -47,13 +47,11 @@ abstract class OmokRule(
         blackPoints: List<Point>,
         whitePoints: List<Point>,
         startPoint: Point,
-    ): KoRule {
-        return listOf(
-            checkDoubleFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_THREE),
-            checkDoubleFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_FOUR),
-            checkOverline(blackPoints, startPoint),
-        ).last { it.state }
-    }
+    ): Violation = listOf(
+        checkDoubleFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_THREE),
+        checkDoubleFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_FOUR),
+        checkOverline(blackPoints, startPoint),
+    ).lastOrNull { it.state } ?: Violation.NONE
 
     /**
      * check 'three-three' point or 'four-four' point according to the given 'foul type'
