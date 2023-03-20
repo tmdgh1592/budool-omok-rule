@@ -4,6 +4,9 @@ plugins {
     id("maven-publish")
 }
 
+group = "com.github.tmdgh1592"
+version = "v1.0.2"
+
 repositories {
     mavenCentral()
 }
@@ -26,5 +29,15 @@ tasks {
     }
     ktlint {
         verbose.set(true)
+    }
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.github.tmdgh1592"
+            artifactId = "budool-omok-rule"
+            version = "1.0.3"
+        }
     }
 }
