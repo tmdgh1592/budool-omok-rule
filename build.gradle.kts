@@ -4,8 +4,12 @@ plugins {
     id("maven-publish")
 }
 
-group = "com.github.tmdgh1592"
-version = "v1.0.0-alpha"
+val groupName = "com.github.tmdgh1592"
+val projectArtifactId = "budool-omok-rule"
+val currentVersion = "v1.0.1-alpha"
+
+group = groupName
+version = currentVersion
 
 repositories {
     mavenCentral()
@@ -35,9 +39,9 @@ tasks {
 publishing {
     publications {
         register<MavenPublication>("release") {
-            groupId = "com.github.tmdgh1592"
-            artifactId = "budool-omok-rule"
-            version = "v1.0.0-alpha"
+            groupId = groupName
+            artifactId = projectArtifactId
+            version = currentVersion
         }
     }
 }
