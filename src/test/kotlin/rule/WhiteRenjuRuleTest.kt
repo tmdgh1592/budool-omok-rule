@@ -19,7 +19,7 @@ class WhiteRenjuRuleTest {
 
     @ParameterizedTest
     @CsvSource("3, 5", "12, 4", "3, 5", "4, 11", "11, 12")
-    fun `백돌은 4-4인 경우에도 반칙이 아니다`() {
+    fun `White stone is not a foul even if it is double four`() {
         val blackStones = listOf(Point(9, 9))
         val whiteStones = listOf(
             Point(3, 3), Point(3, 4), Point(4, 4),
@@ -39,7 +39,7 @@ class WhiteRenjuRuleTest {
 
     @ParameterizedTest
     @CsvSource("8, 3", "12, 6", "10, 10", "8, 9", "5, 8")
-    fun `백돌은 4-4인 경우에도 반칙이 아니다`(newStoneRow: Int, newStoneCol: Int) {
+    fun `White stone is not a foul even if it is double four`(newStoneRow: Int, newStoneCol: Int) {
         val blackStones = listOf(
             Point(5, 4), Point(9, 8),
         )
@@ -60,7 +60,7 @@ class WhiteRenjuRuleTest {
     }
 
     @Test
-    fun `백돌은 장목인 경우에도 반칙이 아니다`() {
+    fun `White stone is not a foul even if it is a overline`() {
         val whiteStones = listOf(
             Point(5, 5), Point(6, 6), Point(7, 7),
             Point(9, 9), Point(10, 10),

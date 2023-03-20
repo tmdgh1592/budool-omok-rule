@@ -19,7 +19,7 @@ class BlackRenjuRuleTest {
 
     @ParameterizedTest
     @CsvSource("3, 5", "12, 4", "3, 5", "4, 11", "11, 12")
-    fun `흑돌은 3-3인 경우에 반칙이다`() {
+    fun `A black stone is a foul if it is double three`() {
         // given
         val blackStones = listOf(
             Point(3, 3), Point(3, 4), Point(4, 4),
@@ -42,7 +42,7 @@ class BlackRenjuRuleTest {
 
     @ParameterizedTest
     @CsvSource("8, 3", "12, 6", "10, 10", "8, 9", "5, 8")
-    fun `흑돌은 4-4인 경우에 반칙이다`(newStoneRow: Int, newStoneCol: Int) {
+    fun `A black stone is a foul if it is double four`(newStoneRow: Int, newStoneCol: Int) {
         // given
         val blackStones = listOf(
             Point(15, 3), Point(14, 3), Point(12, 3),
@@ -66,7 +66,7 @@ class BlackRenjuRuleTest {
     }
 
     @Test
-    fun `흑돌은 장목인 경우에 반칙이다`() {
+    fun `Black stone is a foul in the case of overline`() {
         // given
         val blackStones = listOf(
             Point(5, 5), Point(6, 6), Point(7, 7),
@@ -82,7 +82,7 @@ class BlackRenjuRuleTest {
     }
 
     @Test
-    fun `만약 흑돌 5개가 연이어져 있다면 3-3, 4-4여도 반칙이 아니다`() {
+    fun `If 5 black stones are in a row, it is not a foul even if it is double three  or double four`() {
         // given
         val blackStones = listOf(
             Point(5, 5), Point(5, 6), Point(6, 7),
