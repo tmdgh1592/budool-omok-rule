@@ -1,1 +1,1 @@
-rootProject.name = "omok-rule"
+rootProject.name = "budool-omok-rule"
