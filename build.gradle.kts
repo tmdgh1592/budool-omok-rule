@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.tmdgh1592"
-version = "v1.0.2"
+version = "v1.0.0-alpha"
 
 repositories {
     mavenCentral()
