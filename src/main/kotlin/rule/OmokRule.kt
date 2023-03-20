@@ -18,7 +18,7 @@ abstract class OmokRule(
     /**
      * The function will determine if the win condition is satisfied.
      * If it is a black stone, it will determine whether there is a foul.
-     * On the other hand, Baekdol only checks that the victory condition is satisfied regardless of whether there is a foul play or not.
+     * On the other hand, whiteStone only checks that the victory condition is satisfied regardless of whether there is a foul play or not.
      *
      * @param blackPoints List of pairs for row and column of black stones.
      * @param whitePoints List of pairs for row and column of white stones.
