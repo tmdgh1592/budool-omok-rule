@@ -1,7 +1,6 @@
 package rule.type
 
 enum class Violation(val state: Boolean) {
-    ALL(true),
     DOUBLE_THREE(true),
     DOUBLE_FOUR(true),
     OVERLINE(true),
