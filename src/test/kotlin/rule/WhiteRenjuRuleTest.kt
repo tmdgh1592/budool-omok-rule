@@ -54,7 +54,7 @@ class WhiteRenjuRuleTest {
         )
         val newStone = Point(newStoneRow, newStoneCol)
 
-        val expected = renjuRule.checkAllFoulCondition(blackStones, whiteStones, newStone)
+        val expected = renjuRule.checkAnyFoulCondition(blackStones, whiteStones, newStone)
 
         assertThat(expected).isEqualTo(Violation.NONE)
     }

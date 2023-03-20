@@ -28,7 +28,7 @@ abstract class OmokRule(
      * */
     fun checkWin(blackPoints: List<Point>, whitePoints: List<Point>, startPoint: Point): Boolean {
         val satisfyWin = checkSerialSameStonesBiDirection(blackPoints, startPoint, WIN_STANDARD)
-        val koState = checkAllFoulCondition(blackPoints, whitePoints, startPoint)
+        val koState = checkAnyFoulCondition(blackPoints, whitePoints, startPoint)
 
         if (satisfyWin && koState != Violation.OVERLINE) return true
         return false
@@ -43,7 +43,7 @@ abstract class OmokRule(
      *
      * @return The result of checking all numbers.
      * */
-    fun checkAllFoulCondition(
+    fun checkAnyFoulCondition(
         blackPoints: List<Point>,
         whitePoints: List<Point>,
         startPoint: Point,
