@@ -35,11 +35,6 @@ class BlackRenjuRule(
         startPoint: Point,
         foul: Foul,
     ): KoRule {
-        // Even if it is 3-3 or 4-4, it is not a KO if 5 are in a row.
-        if (checkSerialSameStonesBiDirection(blackPoints, startPoint, WIN_STANDARD)) {
-            return KoRule.NOT_KO
-        }
-
         var continuousStones = 0
         val dirIterator = Directions().iterator()
 

@@ -11,9 +11,7 @@ internal class DirectionsIterator(items: List<Direction<Row, Col>>) : Iterator<D
     override fun hasNext(): Boolean = _items.isNotEmpty()
 
     override fun next(): Direction<Row, Col> {
-        if (hasNext()) {
-            return _items.removeFirst()
-        }
+        if (hasNext()) return _items.removeFirst()
         throw IllegalStateException("The next direction does not exist.")
     }
 

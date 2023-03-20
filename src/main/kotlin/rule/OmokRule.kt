@@ -30,9 +30,7 @@ abstract class OmokRule(
         val satisfyWin = checkSerialSameStonesBiDirection(blackPoints, startPoint, WIN_STANDARD)
         val koState = checkAllFoulCondition(blackPoints, whitePoints, startPoint)
 
-        if (satisfyWin && koState == KoRule.NOT_KO) {
-            return true
-        }
+        if (satisfyWin && koState != KoRule.KO_OVERLINE) return true
         return false
     }
 
@@ -49,12 +47,13 @@ abstract class OmokRule(
         blackPoints: List<Point>,
         whitePoints: List<Point>,
         startPoint: Point,
-    ): KoRule = if (listOf(
+    ): KoRule {
+        return listOf(
             checkDoubleFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_THREE),
             checkDoubleFoul(blackPoints, whitePoints, startPoint, Foul.DOUBLE_FOUR),
-            checkOverline(blackPoints, startPoint)
-        ).any { it.state }
-    ) KoRule.KO_ALL else KoRule.NOT_KO
+            checkOverline(blackPoints, startPoint),
+        ).last { it.state }
+    }
 
     /**
      * check 'three-three' point or 'four-four' point according to the given 'foul type'
