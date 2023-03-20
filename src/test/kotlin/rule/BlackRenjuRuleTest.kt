@@ -85,7 +85,7 @@ class BlackRenjuRuleTest {
     }
 
     @Test
-    fun `If 5 black stones are in a row, it is not a foul even if it is double four`() {
+    fun `If 5 black stones are in a row, it is win even if it is double four`() {
         // given
         val blackStones = listOf(
             Point(5, 5), Point(5, 6),
@@ -105,7 +105,7 @@ class BlackRenjuRuleTest {
     }
 
     @Test
-    fun `If 5 black stones are in a row, it is not a foul even if it is double three`() {
+    fun `If 5 black stones are in a row, it is win even if it is double three`() {
         // given
         val blackStones = listOf(
             Point(5, 5), Point(5, 7),
