@@ -98,10 +98,10 @@ class BlackRenjuRuleTest {
         val newStone = Point(5, 7)
 
         // when
-        val expected = renjuRule.checkAllFoulCondition(blackStones, whiteStones, newStone)
+        val expected = renjuRule.checkWin(blackStones, whiteStones, newStone)
 
         // then
-        assertThat(expected).isEqualTo(KoRule.NOT_KO)
+        assertThat(expected).isTrue
     }
 
     @Test
@@ -117,9 +117,9 @@ class BlackRenjuRuleTest {
         val newStone = Point(5, 6)
 
         // when
-        val expected = renjuRule.checkAllFoulCondition(blackStones, whiteStones, newStone)
+        val expected = renjuRule.checkWin(blackStones, whiteStones, newStone)
 
         // then
-        assertThat(expected).isEqualTo(KoRule.NOT_KO)
+        assertThat(expected).isTrue
     }
 }
