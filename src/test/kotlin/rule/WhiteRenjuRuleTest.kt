@@ -19,7 +19,7 @@ class WhiteRenjuRuleTest {
 
     @ParameterizedTest
     @CsvSource("3, 5", "12, 4", "3, 5", "4, 11", "11, 12")
-    fun `White stone is not a foul even if it is double four`() {
+    fun `White stone is not a foul even if it is double three`() {
         val blackStones = listOf(Point(9, 9))
         val whiteStones = listOf(
             Point(3, 3), Point(3, 4), Point(4, 4),
