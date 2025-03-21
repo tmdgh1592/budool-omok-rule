@@ -9,12 +9,12 @@ import rule.type.Foul
 import rule.type.Violation
 import rule.wrapper.point.Point
 
-class WhiteRenjuRuleTest {
+class WhiteRenjuRuleImplTest {
     private lateinit var renjuRule: OmokRule
 
     @BeforeEach
     fun setUp() {
-        renjuRule = WhiteRenjuRule(15, 15)
+        renjuRule = WhiteRenjuRuleImpl(15, 15)
     }
 
     @ParameterizedTest

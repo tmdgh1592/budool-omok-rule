@@ -9,7 +9,7 @@ import rule.type.WhiteBlocked
 import rule.wrapper.direction.Directions
 import rule.wrapper.point.Point
 
-class BlackRenjuRule(
+internal class BlackRenjuRuleImpl(
     boardWidth: Int = DEFAULT_BOARD_WIDTH,
     boardHeight: Int = DEFAULT_BOARD_HEIGHT,
 ) : OmokRule(boardWidth, boardHeight) {

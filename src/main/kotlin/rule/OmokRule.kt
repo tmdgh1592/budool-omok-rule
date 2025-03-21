@@ -11,7 +11,7 @@ typealias MoveWeight = Int
 
 typealias Direction<R, C> = Pair<R, C>
 
-abstract class OmokRule(
+internal abstract class OmokRule(
     protected val boardWidth: Row,
     protected val boardHeight: Col,
 ) {
@@ -26,8 +26,8 @@ abstract class OmokRule(
      *
      * @return Returns true if no fouls are played and the win conditions are met.
      * */
-    fun checkWin(blackPoints: List<Point>, whitePoints: List<Point>, startPoint: Point): Boolean {
-        val satisfyWin = checkSerialSameStonesBiDirection(blackPoints, startPoint, WIN_STANDARD)
+    fun checkWin(blackPoints: List<Point>, whitePoints: List<Point>, startPoint: Point, winningCount: Int = WIN_STANDARD): Boolean {
+        val satisfyWin = checkSerialSameStonesBiDirection(blackPoints, startPoint, winningCount)
         val koState = checkAnyFoulCondition(blackPoints, whitePoints, startPoint)
 
         if (satisfyWin && koState != Violation.OVERLINE) return true

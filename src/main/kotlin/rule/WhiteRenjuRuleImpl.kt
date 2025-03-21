@@ -4,7 +4,7 @@ import rule.type.Foul
 import rule.type.Violation
 import rule.wrapper.point.Point
 
-class WhiteRenjuRule(
+internal class WhiteRenjuRuleImpl(
     boardWidth: Int = DEFAULT_BOARD_WIDTH,
     boardHeight: Int = DEFAULT_BOARD_HEIGHT,
 ) : OmokRule(boardWidth, boardHeight) {

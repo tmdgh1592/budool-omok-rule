@@ -1,6 +1,6 @@
 val groupName = "com.github.tmdgh1592"
 val projectArtifactId = "budool-omok-rule"
-val currentVersion = "v1.0.1-alpha"
+val currentVersion = "v2.0.0-alpha"
 
 plugins {
     java
