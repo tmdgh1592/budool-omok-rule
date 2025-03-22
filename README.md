@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    val currentVersion = "v1.0.3-alpha"
+    val currentVersion = "v2.0.0-alpha"
     implementation("com.github.tmdgh1592:budool-omok-rule:$currentVersion")
 ```
 
